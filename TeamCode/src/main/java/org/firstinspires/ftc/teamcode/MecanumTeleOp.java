@@ -4,10 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
+import org.firstinspires.ftc.teamcode.FTCArm;
+import org.firstinspires.ftc.teamcode.FTCarmclaw;
+import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
+    /*DcMotor armRotationMotor = hardwareMap.dcMotor.get("armRotationMotor");
+    Servo rightclawservo = hardwareMap.servo.get("rightClawServo");
+    Servo leftclawservo = hardwareMap.servo.get("leftClawServo");
+    FTCArm ftcArm= new FTCArm(armRotationMotor);
+    FTCarmclaw ftcarmclaw= new FTCarmclaw(rightclawservo,leftclawservo);*/
     private void autoDrive(double xSpeed,double ySpeed,int rotation,double distance){
+
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
@@ -52,6 +60,8 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+        DcMotor ftcArm = hardwareMap.dcMotor.get("armMotor");
+        Servo clawDrop=hardwareMap.servo.get("claw");
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -78,20 +88,42 @@ public class MecanumTeleOp extends LinearOpMode {
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
 
-            //frontLeftMotor.setPower(0-frontLeftPower);
-            //backLeftMotor.setPower(0-backLeftPower);
-            //frontRightMotor.setPower(frontRightPower);
-            //backRightMotor.setPower(backRightPower);
+            frontLeftMotor.setPower(0-frontLeftPower);
+            backLeftMotor.setPower(0-backLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backRightMotor.setPower(backRightPower);
             telemetry.addData("Rotations",frontLeftMotor.getCurrentPosition());
             telemetry.addData("speed",frontLeftMotor.getPower());
             telemetry.addData("Trigger",trigger);
             telemetry.addData("Y value",y);
             if (gamepad1.share){
-                autoDrive(0.0,0.6,352,352*3);
-                autoDrive(0.6,0,352,352*6);
-                autoDrive(0.0,-0.6,352,352*3);
-                autoDrive(-0.6,0,352,352*6);
+                autoDrive(0.0,0.6,352,352);
+                //autoDrive(0.6,0,352,352*6);
+                //autoDrive(0.0,-0.6,352,352*3);
+                //autoDrive(-0.6,0,352,352*6);
             }
+            if(gamepad1.dpad_up){
+                ftcArm.setPower(0.5);
+            }
+            else{
+               ftcArm.setPower(0);
+            }
+            if(gamepad1.dpad_down){
+                ftcArm.setPower(-0.5);
+            }
+            else{
+                ftcArm.setPower(0);
+            }
+            if(gamepad1.y){
+                clawDrop.setPosition(90);
+            }
+            if(gamepad1.x){
+                clawDrop.setPosition(0);
+            }
+            /*
+            if(gamepad1.x){
+                ftcarmclaw.toggle();
+            }*/
         }
     }
 }
