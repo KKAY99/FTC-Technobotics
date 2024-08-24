@@ -70,7 +70,7 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
         DcMotor ftcArm = hardwareMap.dcMotor.get("armMotor");
         ftcArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //Servo clawDrop=hardwareMap.servo.get("claw");
+        Servo clawDrop=hardwareMap.servo.get("claw");
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -167,7 +167,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
                     break;
             }
-            /*
+
             if(gamepad1.y){
                 clawDrop.setPosition(90);
             }
@@ -175,9 +175,6 @@ public class MecanumTeleOp extends LinearOpMode {
                 clawDrop.setPosition(0);
             }
 
-            if(gamepad1.x){
-                ftcarmclaw.toggle();
-            }*/
         }
     }
 }
