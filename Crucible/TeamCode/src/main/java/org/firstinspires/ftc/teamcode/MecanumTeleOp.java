@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -54,14 +55,19 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-        //Servo clawDrop=hardwareMap.servo.get("claw");
-
+        DcMotor armMotor = hardwareMap.dcMotor.get("armMotor");
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Servo clawWrist=hardwareMap.servo.get("wristServo");
+        CRServo clawRight=hardwareMap.crservo.get("rightServo");
+        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        CRServo clawLeft=hardwareMap.crservo.get("leftServo");
+        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         waitForStart();
 
@@ -108,6 +114,30 @@ public class MecanumTeleOp extends LinearOpMode {
                 //autoDrive(0.6,0,352,352*6);
                 //autoDrive(0.0,-0.6,352,352*3);
                 //autoDrive(-0.6,0,352,352*6);
+            }
+            if (gamepad1.dpad_up){
+                armMotor.setPower(-Constants.MotorConstants.armSpeed);
+            }
+            else{
+                if(gamepad1.dpad_down){
+                    armMotor.setPower(Constants.MotorConstants.armSpeed);
+            } else {
+                    armMotor.setPower(0);
+                }
+            }
+            if (gamepad1.a) {
+                clawLeft.setPower(Constants.MotorConstants.intakeSpeed);
+                clawRight.setPower(Constants.MotorConstants.intakeSpeed);
+            } else {
+                clawLeft.setPower(0);
+                clawRight.setPower(0);
+            }
+            if (gamepad1.y) {
+                clawLeft.setPower(-Constants.MotorConstants.intakeSpeed);
+                clawRight.setPower(-Constants.MotorConstants.intakeSpeed);
+            } else {
+                clawLeft.setPower(0);
+                clawRight.setPower(0);
             }
         }
     }
