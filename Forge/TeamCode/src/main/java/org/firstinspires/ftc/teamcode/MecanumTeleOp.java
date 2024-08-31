@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.FTCArm;
@@ -28,6 +29,7 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+
         // Reset the motor encoder so that it reads zero ticks
         frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
@@ -70,8 +72,8 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
         DcMotor ftcArm = hardwareMap.dcMotor.get("armMotor");
         ftcArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Servo clawDrop=hardwareMap.servo.get("claw");
-
+        Servo clawDrop=hardwareMap.servo.get("servo");
+        double servoPosition=Constants.MotorConstants.servo_start_position;
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -121,12 +123,7 @@ public class MecanumTeleOp extends LinearOpMode {
             telemetry.addData("speed", frontLeftMotor.getPower());
             telemetry.addData("Trigger", trigger);
             telemetry.addData("Y value", y);
-            if (gamepad1.share) {
-                autoDrive(0.0, 0.6, 352, 352);
-                //autoDrive(0.6,0,352,352*6);
-                //autoDrive(0.0,-0.6,352,352*3);
-                //autoDrive(-0.6,0,352,352*6);
-            }
+
             ftcArmStates=ArmStates.NOTMOVING;
             if (gamepad1.dpad_up) {
                 ftcArmStates=ArmStates.MOVINGUP;
@@ -167,14 +164,28 @@ public class MecanumTeleOp extends LinearOpMode {
 
                     break;
             }
-
+           /*
             if(gamepad1.y){
-                clawDrop.setPosition(90);
-            }
-            if(gamepad1.x){
+                //clawDrop.setDirection(DcMotorSimple.Direction.FORWARD);
                 clawDrop.setPosition(0);
+            } else {
+                if (gamepad1.x) {
+                    // clawDrop.setDirection(DcMotorSimple.Direction.REVERSE);
+                    clawDrop.setPosition(.25);
+                } else {
+                    clawDrop.setPosition(0);
+                }
+            }*/
+
+            if (gamepad1.y && servoPosition > Constants.MotorConstants.servo_start_position ) {
+                //clawDrop.setDirection(DcMotorSimple.Direction.FORWARD);
+                servoPosition -= 0.01;
+            } else if (gamepad1.x && servoPosition < Constants.MotorConstants.servo_end_position) {
+                // clawDrop.setDirection(DcMotorSimple.Direction.REVERSE);
+               servoPosition += 0.01;
             }
 
+            clawDrop.setPosition(servoPosition);
         }
     }
 }

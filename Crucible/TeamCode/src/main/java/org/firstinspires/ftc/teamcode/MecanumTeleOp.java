@@ -57,7 +57,7 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
         DcMotor armMotor = hardwareMap.dcMotor.get("armMotor");
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Servo clawWrist=hardwareMap.servo.get("wristServo");
+        CRServo clawWrist=hardwareMap.crservo.get("wristServo");
         CRServo clawRight=hardwareMap.crservo.get("rightServo");
         clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
         CRServo clawLeft=hardwareMap.crservo.get("leftServo");
@@ -138,6 +138,18 @@ public class MecanumTeleOp extends LinearOpMode {
             } else {
                 clawLeft.setPower(0);
                 clawRight.setPower(0);
+            }
+            if (gamepad1.x) {
+                clawWrist.setPower(Constants.MotorConstants.wristSpeed);
+
+            } else {
+
+                if (gamepad1.b) {
+                    clawWrist.setPower(-Constants.MotorConstants.wristSpeed);
+
+                } else {
+                    clawWrist.setPower(0);
+                }
             }
         }
     }
