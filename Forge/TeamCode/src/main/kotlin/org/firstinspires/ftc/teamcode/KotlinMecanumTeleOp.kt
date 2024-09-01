@@ -47,7 +47,7 @@ class KotlinMecanumTeleOp : LinearOpMode() {
         val backRightMotor: DcMotor = hardwareMap.dcMotor.get(HARDWARE_MAP_BACK_RIGHT_MOTOR)
 
         val armMotor: DcMotor = hardwareMap.dcMotor.get(HARDWARE_MAP_ARM_MOTOR)
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER)
+        armMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
         val lidServo: Servo = hardwareMap.servo.get(HARDWARE_MAP_SERVO_MOTOR)
         var servoPosition: Double = SERVO_START_POSITION
@@ -56,12 +56,12 @@ class KotlinMecanumTeleOp : LinearOpMode() {
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE)
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE)
+        frontRightMotor.direction = DcMotorSimple.Direction.REVERSE
+        backRightMotor.direction = DcMotorSimple.Direction.REVERSE
 
         waitForStart()
 
-        if (isStopRequested()) return
+        if (isStopRequested) return
 
         while (opModeIsActive()) {
             // START SETUP MECANUM DRIVETRAIN MOTORS
@@ -86,10 +86,10 @@ class KotlinMecanumTeleOp : LinearOpMode() {
             val frontRightPower = (rightStickY - leftStickX - rightStickX) / denominator
             val backRightPower = (rightStickY + leftStickX - rightStickX) / denominator
 
-            frontLeftMotor.setPower(0 - frontLeftPower)
-            backLeftMotor.setPower(0 - backLeftPower)
-            frontRightMotor.setPower(frontRightPower)
-            backRightMotor.setPower(backRightPower)
+            frontLeftMotor.power = 0 - frontLeftPower
+            backLeftMotor.power = 0 - backLeftPower
+            frontRightMotor.power = frontRightPower
+            backRightMotor.power = backRightPower
             telemetry.addData(TELEMETRY_KEY_ROTATIONS, frontLeftMotor.getCurrentPosition())
             telemetry.addData(TELEMETRY_KEY_SPEED, frontLeftMotor.getPower())
             telemetry.addData(TELEMETRY_KEY_TRIGGER, gamepad1.right_trigger)
@@ -99,25 +99,25 @@ class KotlinMecanumTeleOp : LinearOpMode() {
             // START GET CURRENT ARM STATE AND SET ARM MOTOR MODE AND POWER
             when (getArmState()) {
                 ArmState.NOTMOVING -> {
-                    armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-                    armMotor.setPower(0.0)
+                    armMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                    armMotor.power = 0.0
                 }
 
                 ArmState.MOVINGDOWN, ArmState.MOVINGUP -> {
-                    armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-                    armMotor.setPower(-ARM_SPEED)
+                    armMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                    armMotor.power = -ARM_SPEED
                 }
 
                 ArmState.TOPOSITIONLOW -> {
-                    armMotor.setPower(ARM_SPEED)
-                    armMotor.setTargetPosition(PICKUP_POSITION)
-                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION)
+                    armMotor.power = ARM_SPEED
+                    armMotor.targetPosition = PICKUP_POSITION
+                    armMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
                 }
 
                 ArmState.TOPOSITIONHIGH -> {
-                    armMotor.setPower(ARM_SPEED)
-                    armMotor.setTargetPosition(SCORE_POSITION)
-                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION)
+                    armMotor.power = ARM_SPEED
+                    armMotor.targetPosition = SCORE_POSITION
+                    armMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
                 }
             }
             // END GET CURRENT ARM STATE AND SET ARM MOTOR MODE AND POWER
@@ -133,7 +133,7 @@ class KotlinMecanumTeleOp : LinearOpMode() {
                 // sleep(10L)
             }
 
-            lidServo.setPosition(servoPosition)
+            lidServo.position = servoPosition
             // END SET LID SERVO MOTOR POSITION
         }
     }
