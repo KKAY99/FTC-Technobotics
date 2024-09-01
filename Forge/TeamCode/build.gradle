@@ -10,6 +10,7 @@
 
 
 // Custom definitions may go here
+apply plugin: 'org.jetbrains.kotlin.android'
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
@@ -20,6 +21,10 @@ android {
 
     packagingOptions {
         jniLibs.useLegacyPackaging true
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
