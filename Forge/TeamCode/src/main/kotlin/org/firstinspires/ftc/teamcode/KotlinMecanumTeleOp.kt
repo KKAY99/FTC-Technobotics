@@ -138,7 +138,7 @@ class KotlinMecanumTeleOp : LinearOpMode() {
         }
     }
 
-    fun getArmState(): ArmState = when {
+    private fun getArmState(): ArmState = when {
         gamepad1.dpad_up -> ArmState.MOVINGUP
         gamepad1.dpad_down -> ArmState.MOVINGDOWN
         gamepad1.left_bumper -> ArmState.TOPOSITIONLOW
