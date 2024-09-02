@@ -78,6 +78,7 @@ public class MecanumTeleOp extends LinearOpMode {
             double x = -gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
             double trigger = gamepad1.right_trigger;
+            double armtrigger=gamepad1.left_trigger;
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
@@ -116,11 +117,16 @@ public class MecanumTeleOp extends LinearOpMode {
                 //autoDrive(-0.6,0,352,352*6);
             }
             if (gamepad1.dpad_up){
+
                 armMotor.setPower(-Constants.MotorConstants.armSpeed);
             }
             else{
                 if(gamepad1.dpad_down){
-                    armMotor.setPower(Constants.MotorConstants.armSpeed);
+                    if (armtrigger>0){
+                        armMotor.setPower(Constants.MotorConstants.armSpeed*2);
+                    }else{
+                        armMotor.setPower(Constants.MotorConstants.armSpeed);
+                    }
             } else {
                     armMotor.setPower(0);
                 }
