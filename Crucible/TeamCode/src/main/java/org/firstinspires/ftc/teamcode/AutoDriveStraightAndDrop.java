@@ -52,24 +52,34 @@ private void openclaw(long timetoopen){
     clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
     CRServo clawLeft=hardwareMap.crservo.get("leftServo");
     clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-    clawLeft.setPower(-Constants.MotorConstants.intakeSpeed);
-    clawRight.setPower(-Constants.MotorConstants.intakeSpeed);
+    clawLeft.setPower(Constants.MotorConstants.intakeSpeed);
+    clawRight.setPower(Constants.MotorConstants.intakeSpeed);
     sleep(timetoopen);
     clawLeft.setPower(0);
     clawRight.setPower(0);
 
 }
+ private void liftarm(long timetoopen){
+     DcMotor armMotor = hardwareMap.dcMotor.get("armMotor");
+     armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setPower(-Constants.MotorConstants.armSpeed);
+        sleep(timetoopen);
+        armMotor.setPower(0);
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         waitForStart();
 
         if (isStopRequested()) return;
-
+        boolean autohasrun=false;
         while (opModeIsActive()) {
-            autoDrive(.5, 0, 0, 32);
-            long timetoopen=5;
-            openclaw(timetoopen);
-
+            if (autohasrun==false) {
+                liftarm(1000);
+                autoDrive(.5, 0, 0, 1300);
+                long timetoopen = 1000;
+               // openclaw(timetoopen);
+                autohasrun=true;
+            }
         }
     }
 }
