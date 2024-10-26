@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.google.blocks.ftcrobotcontroller.hardware.HardwareItemMap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp
 public class TestOpClass extends LinearOpMode {
@@ -22,8 +26,10 @@ public class TestOpClass extends LinearOpMode {
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        waitForStart();
-
+        DcMotor armMotor=HardwareMap.dcMotor.get("armMotor");
+        DcMotor viperMotor=HardwareMap.dcMotor.get("viperMotor");
+        CRServo intakeServo= HardwareMap.CRServo.get("intakeServo");
+        CRServo wristServo= HardwareMap.CRServo.get("wristServo");
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
@@ -31,6 +37,7 @@ public class TestOpClass extends LinearOpMode {
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
             double trigger = gamepad1.right_trigger;
+            double viperMotorSpeed=0;
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,6
             // but only if at least one is out of the range [-1, 1]
@@ -58,6 +65,22 @@ public class TestOpClass extends LinearOpMode {
             backLeftMotor.setPower(0 - backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+            viperMotorSpeed=0;
+            if(gamepad2.left_bumper){
+               viperMotorSpeed=0.2;
+            }
+            if(gamepad2.right_bumper){
+                viperMotorSpeed=-0.2;
+            }
+            viperMotor.setpower(viperMotorSpeed);
+            armMotorSpeed=0;
+            if(gamepad2.dpad_up){
+                armMotorSpeed=0.2;
+            }
+            if(gamepad2.dpad_down){
+                armMotorSpeed=-0.2;
+            }
+            armMotor.setpower(armMotorSpeed);
 
         }
     }
