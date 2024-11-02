@@ -26,10 +26,10 @@ public class TestOpClass extends LinearOpMode {
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        DcMotor armMotor=HardwareMap.dcMotor.get("armMotor");
-        DcMotor viperMotor=HardwareMap.dcMotor.get("viperMotor");
-        CRServo intakeServo= HardwareMap.CRServo.get("intakeServo");
-        CRServo wristServo= HardwareMap.CRServo.get("wristServo");
+        DcMotor armMotor=hardwareMap.dcMotor.get("armMotor");
+        DcMotor viperMotor=hardwareMap.dcMotor.get("viperMotor");
+        CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
+        CRServo wristServo= hardwareMap.crservo.get("wristServo");
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
@@ -38,6 +38,7 @@ public class TestOpClass extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
             double trigger = gamepad1.right_trigger;
             double viperMotorSpeed=0;
+            double armMotorSpeed=0;
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,6
             // but only if at least one is out of the range [-1, 1]
@@ -66,21 +67,23 @@ public class TestOpClass extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
             viperMotorSpeed=0;
+            armMotorSpeed=0;
+
             if(gamepad2.left_bumper){
                viperMotorSpeed=0.2;
             }
             if(gamepad2.right_bumper){
                 viperMotorSpeed=-0.2;
             }
-            viperMotor.setpower(viperMotorSpeed);
-            armMotorSpeed=0;
+            viperMotor.setPower(viperMotorSpeed);
+
             if(gamepad2.dpad_up){
                 armMotorSpeed=0.2;
             }
             if(gamepad2.dpad_down){
                 armMotorSpeed=-0.2;
             }
-            armMotor.setpower(armMotorSpeed);
+            armMotor.setPower(armMotorSpeed);
 
         }
     }
