@@ -27,18 +27,14 @@ public class TestOpClass extends LinearOpMode {
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         DcMotor armMotor=hardwareMap.dcMotor.get("armMotor");
+        
         DcMotor viperMotor=hardwareMap.dcMotor.get("viperMotor");
         CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
-<<<<<<< HEAD
         intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
 
         CRServo wristServo= hardwareMap.crservo.get("wristServo");
-
         waitForStart();
 
-=======
-        CRServo wristServo= hardwareMap.crservo.get("wristServo");
->>>>>>> 130bc42d540a263588649db2701f922a5b0b8f69
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
@@ -48,11 +44,8 @@ public class TestOpClass extends LinearOpMode {
             double trigger = gamepad1.right_trigger;
             double viperMotorSpeed=0;
             double armMotorSpeed=0;
-<<<<<<< HEAD
             double intakeMotorSpeed=0;
             double wristMotorSpeed=0;
-=======
->>>>>>> 130bc42d540a263588649db2701f922a5b0b8f69
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,6
             // but only if at least one is out of the range [-1, 1]
@@ -82,7 +75,8 @@ public class TestOpClass extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
             viperMotorSpeed=0;
             armMotorSpeed=0;
-
+            telemetry.addData("Arm Position",armMotor.getCurrentPosition());
+            telemetry.update();
             if(gamepad2.left_bumper){
                viperMotorSpeed=Constants.MotorConstants.viperMoveSpeed;
             }
@@ -90,11 +84,9 @@ public class TestOpClass extends LinearOpMode {
                 viperMotorSpeed=-Constants.MotorConstants.viperMoveSpeed;
             }
             viperMotor.setPower(viperMotorSpeed);
-<<<<<<< HEAD
-            armMotorSpeed=0;
-=======
 
->>>>>>> 130bc42d540a263588649db2701f922a5b0b8f69
+            armMotorSpeed=0;
+
             if(gamepad2.dpad_up){
                 armMotorSpeed=Constants.MotorConstants.armMoveUpSpeed;
             }
@@ -102,7 +94,7 @@ public class TestOpClass extends LinearOpMode {
                 armMotorSpeed=Constants.MotorConstants.armMoveDownSpeed;
             }
             armMotor.setPower(armMotorSpeed);
-<<<<<<< HEAD
+
             if(gamepad2.x){
                 intakeMotorSpeed=Constants.MotorConstants.intakeMoveSpeed;
             }
@@ -117,9 +109,7 @@ public class TestOpClass extends LinearOpMode {
                 wristMotorSpeed=Constants.MotorConstants.wristMoveDownSpeed;
             }
             wristServo.setPower(wristMotorSpeed);
-=======
 
->>>>>>> 130bc42d540a263588649db2701f922a5b0b8f69
         }
     }
 }
