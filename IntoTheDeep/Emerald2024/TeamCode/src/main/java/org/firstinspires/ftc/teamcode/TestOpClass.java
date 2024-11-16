@@ -19,6 +19,12 @@ public class TestOpClass extends LinearOpMode {
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
         DcMotor armMotor = hardwareMap.dcMotor.get("armMotor");
         DcMotor udarmMotor = hardwareMap.dcMotor.get("udarmMotor");
+
+        Servo clawServo = hardwareMap.servo.get("clawServo");
+        Servo wristServo = hardwareMap.servo.get("wristServo");
+
+        boolean servoToggle = true;
+        double servoStartPosition = clawServo.getPosition();
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -71,6 +77,24 @@ public class TestOpClass extends LinearOpMode {
             }
             else {
                 udarmMotor.setPower(0);
+            }
+            if (gamepad2.x){
+                if (servoToggle) {
+                    clawServo.setPosition(servoStartPosition + Cons
+                            tants.ServoConstants.servoOpenDegree);
+                    servoToggle = false;
+                }
+                else {
+                    clawServo.setPosition(servoStartPosition);
+                    servoToggle = true;
+                }
+            }
+            if (gamepad2.left_trigger > 0){
+                    clawServo.setPosition(30);
+
+            }
+            if (gamepad2.right_trigger > 0){
+                clawServo.setPosition(-30);
             }
             //limit speed to MaxPower
             y = y * maxPower;
