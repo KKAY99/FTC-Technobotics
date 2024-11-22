@@ -19,5 +19,8 @@ public class Atonmous extends LinearOpMode {
 
         Servo clawServo = hardwareMap.servo.get("clawServo");
         Servo wristServo = hardwareMap.servo.get("wristServo");
+
+
+
     }
 }
