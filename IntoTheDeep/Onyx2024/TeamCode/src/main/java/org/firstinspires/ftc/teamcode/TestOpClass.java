@@ -26,10 +26,15 @@ public class TestOpClass extends LinearOpMode {
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        DcMotor armMotor=HardwareMap.dcMotor.get("armMotor");
-        DcMotor viperMotor=HardwareMap.dcMotor.get("viperMotor");
-        CRServo intakeServo= HardwareMap.CRServo.get("intakeServo");
-        CRServo wristServo= HardwareMap.CRServo.get("wristServo");
+        DcMotor armMotor=hardwareMap.dcMotor.get("armMotor");
+        
+        DcMotor viperMotor=hardwareMap.dcMotor.get("viperMotor");
+        CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
+        intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        CRServo wristServo= hardwareMap.crservo.get("wristServo");
+        waitForStart();
+
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
@@ -38,6 +43,9 @@ public class TestOpClass extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
             double trigger = gamepad1.right_trigger;
             double viperMotorSpeed=0;
+            double armMotorSpeed=0;
+            double intakeMotorSpeed=0;
+            double wristMotorSpeed=0;
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,6
             // but only if at least one is out of the range [-1, 1]
@@ -66,21 +74,41 @@ public class TestOpClass extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
             viperMotorSpeed=0;
+            armMotorSpeed=0;
+            telemetry.addData("Arm Position",armMotor.getCurrentPosition());
+            telemetry.update();
             if(gamepad2.left_bumper){
-               viperMotorSpeed=0.2;
+               viperMotorSpeed=Constants.MotorConstants.viperMoveSpeed;
             }
             if(gamepad2.right_bumper){
-                viperMotorSpeed=-0.2;
+                viperMotorSpeed=-Constants.MotorConstants.viperMoveSpeed;
             }
-            viperMotor.setpower(viperMotorSpeed);
+            viperMotor.setPower(viperMotorSpeed);
+
             armMotorSpeed=0;
+
             if(gamepad2.dpad_up){
-                armMotorSpeed=0.2;
+                armMotorSpeed=Constants.MotorConstants.armMoveUpSpeed;
             }
             if(gamepad2.dpad_down){
-                armMotorSpeed=-0.2;
+                armMotorSpeed=Constants.MotorConstants.armMoveDownSpeed;
             }
-            armMotor.setpower(armMotorSpeed);
+            armMotor.setPower(armMotorSpeed);
+
+            if(gamepad2.x){
+                intakeMotorSpeed=Constants.MotorConstants.intakeMoveSpeed;
+            }
+            if(gamepad2.b){
+                intakeMotorSpeed=-Constants.MotorConstants.intakeMoveSpeed;
+            }
+            intakeServo.setPower(intakeMotorSpeed);
+            if(gamepad2.y){
+                wristMotorSpeed=Constants.MotorConstants.wristMoveUpSpeed;
+            }
+            if(gamepad2.a){
+                wristMotorSpeed=Constants.MotorConstants.wristMoveDownSpeed;
+            }
+            wristServo.setPower(wristMotorSpeed);
 
         }
     }
