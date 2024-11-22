@@ -38,6 +38,6 @@ Constants {
     }
 
     public final static class ServoConstants{
-        public static final double servoOpenDegree = 0.9;
+        public static final double servoOpenDegree = 0.8;
     }
 }

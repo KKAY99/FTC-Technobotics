@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.teamcode.Constants;
 @TeleOp
 public class TestOpClass extends LinearOpMode {
@@ -21,7 +22,7 @@ public class TestOpClass extends LinearOpMode {
         DcMotor udarmMotor = hardwareMap.dcMotor.get("udarmMotor");
 
         Servo clawServo = hardwareMap.servo.get("clawServo");
-        Servo wristServo = hardwareMap.servo.get("wristServo");
+        CRServo wristServo = hardwareMap.crservo.get("wristServo");
 
         boolean servoToggle = true;
         double servoStartPosition = clawServo.getPosition();
@@ -79,22 +80,20 @@ public class TestOpClass extends LinearOpMode {
                 udarmMotor.setPower(0);
             }
             if (gamepad2.x){
-                if (servoToggle) {
-                    clawServo.setPosition(servoStartPosition + Cons
-                            tants.ServoConstants.servoOpenDegree);
-                    servoToggle = false;
+                    clawServo.setPosition(servoStartPosition + Constants.ServoConstants.servoOpenDegree);
                 }
-                else {
-                    clawServo.setPosition(servoStartPosition);
-                    servoToggle = true;
+            if (gamepad2.triangle) {
+                  clawServo.setPosition(servoStartPosition);
                 }
+            if (gamepad2.left_trigger > 0.2) {
+                wristServo.setPower(-0.5);
+            } else {
+                wristServo.setPower((0));
             }
-            if (gamepad2.left_trigger > 0){
-                    clawServo.setPosition(30);
-
-            }
-            if (gamepad2.right_trigger > 0){
-                clawServo.setPosition(-30);
+            if (gamepad2.right_trigger > 0.2){
+                wristServo.setPower(0.5 );
+            }else {
+                wristServo.setPower(0);
             }
             //limit speed to MaxPower
             y = y * maxPower;
