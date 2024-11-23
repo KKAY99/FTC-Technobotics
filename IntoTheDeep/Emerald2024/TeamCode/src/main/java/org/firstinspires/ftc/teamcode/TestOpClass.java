@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.teamcode.Constants;
 @TeleOp
 public class TestOpClass extends LinearOpMode {
@@ -17,6 +18,14 @@ public class TestOpClass extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+        DcMotor armMotor = hardwareMap.dcMotor.get("armMotor");
+        DcMotor udarmMotor = hardwareMap.dcMotor.get("udarmMotor");
+
+        Servo clawServo = hardwareMap.servo.get("clawServo");
+        CRServo wristServo = hardwareMap.crservo.get("wristServo");
+
+        boolean servoToggle = true;
+        double servoStartPosition = clawServo.getPosition();
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -50,6 +59,42 @@ public class TestOpClass extends LinearOpMode {
                     maxPower = 0.1;
                 }
             }
+
+            if (gamepad2.dpad_up) {
+                armMotor.setPower(0.6);
+            }
+            else if (gamepad2.dpad_down) {
+                armMotor.setPower(-0.6);
+            }
+            else {
+                armMotor.setPower(0);
+            }
+
+            if (gamepad2.left_bumper) {
+                udarmMotor.setPower(0.6);
+            }
+            else if (gamepad2.right_bumper) {
+                udarmMotor.setPower(-0.6);
+            }
+            else {
+                udarmMotor.setPower(0);
+            }
+            if (gamepad2.x){
+                    clawServo.setPosition(servoStartPosition + Constants.ServoConstants.servoOpenDegree);
+                }
+            if (gamepad2.triangle) {
+                  clawServo.setPosition(servoStartPosition);
+                }
+            if (gamepad2.left_trigger > 0.2) {
+                wristServo.setPower(-0.5);
+            } else {
+                wristServo.setPower((0));
+            }
+            if (gamepad2.right_trigger > 0.2){
+                wristServo.setPower(0.5 );
+            }else {
+                wristServo.setPower(0);
+            }
             //limit speed to MaxPower
             y = y * maxPower;
             x = x * maxPower;
@@ -67,7 +112,7 @@ public class TestOpClass extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
-
+            
 
         }
     }
