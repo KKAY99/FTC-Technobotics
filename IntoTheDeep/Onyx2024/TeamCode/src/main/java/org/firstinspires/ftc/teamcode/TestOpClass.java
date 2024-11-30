@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -25,9 +26,16 @@ public class TestOpClass extends LinearOpMode {
         // See the note about this earlier on this page.
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
+        int armMotorPosition=0;
+        int lastArmMotorPosition=0;
         DcMotor armMotor=hardwareMap.dcMotor.get("armMotor");
-        
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+// Reset the motor encoder so that it reads zero ticks
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setTargetPosition(armMotorPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(Constants.MotorConstants.armAutoSpeed);
+
         DcMotor viperMotor=hardwareMap.dcMotor.get("viperMotor");
         CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
         intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -43,7 +51,6 @@ public class TestOpClass extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
             double trigger = gamepad1.right_trigger;
             double viperMotorSpeed=0;
-            double armMotorSpeed=0;
             double intakeMotorSpeed=0;
             double wristMotorSpeed=0;
             // Denominator is the largest motor power (absolute value) or 1
@@ -74,9 +81,7 @@ public class TestOpClass extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
             viperMotorSpeed=0;
-            armMotorSpeed=0;
-            telemetry.addData("Arm Position",armMotor.getCurrentPosition());
-            telemetry.update();
+
             if(gamepad2.left_bumper){
                viperMotorSpeed=Constants.MotorConstants.viperMoveSpeed;
             }
@@ -85,15 +90,16 @@ public class TestOpClass extends LinearOpMode {
             }
             viperMotor.setPower(viperMotorSpeed);
 
-            armMotorSpeed=0;
+
 
             if(gamepad2.dpad_up){
-                armMotorSpeed=Constants.MotorConstants.armMoveUpSpeed;
+
+                armMotorPosition=armMotorPosition+Constants.MotorConstants.armMovementSpeed;
             }
             if(gamepad2.dpad_down){
-                armMotorSpeed=Constants.MotorConstants.armMoveDownSpeed;
+               armMotorPosition=armMotorPosition-Constants.MotorConstants.armMovementSpeed;
             }
-            armMotor.setPower(armMotorSpeed);
+            //armMotor.setPower(armMotorSpeed);
 
             if(gamepad2.x){
                 intakeMotorSpeed=Constants.MotorConstants.intakeMoveSpeed;
@@ -109,7 +115,36 @@ public class TestOpClass extends LinearOpMode {
                 wristMotorSpeed=Constants.MotorConstants.wristMoveDownSpeed;
             }
             wristServo.setPower(wristMotorSpeed);
+            // If the right bumper is pressed, lower the arm
+            if (gamepad2.right_bumper) {
+                armMotorPosition=Constants.MotorConstants.armPositionDown;
 
+            }
+            // if the left bumber is pressed, raises arm
+
+            if (gamepad2.left_bumper){
+                armMotorPosition=Constants.MotorConstants.armPositionUp;
+            }
+            if (((armMotorPosition-lastArmMotorPosition)>Constants.MotorConstants.armMovementThreshold) ||
+            ((armMotorPosition-lastArmMotorPosition)<-Constants.MotorConstants.armMovementThreshold))
+            {
+                armMotor.setTargetPosition(armMotorPosition);
+                lastArmMotorPosition = armMotorPosition;
+            }
+            telemetry.addData("Arm Position",armMotor.getCurrentPosition());
+            telemetry.addData("Arm Target",armMotorPosition);
+            telemetry.update();
+            /*if(bMoveUpMode){
+                int currentPosition=armMotor.getCurrentPosition();
+                int distance=Constants.MotorConstants.armPositionUp-currentPosition;
+                if(currentPosition==Constants.MotorConstants){
+                    armMotor.setPower(0);
+                    bMoveUpMode=false;
+                }
+                else {
+
+                }
+            }*/
         }
     }
 }
