@@ -9,9 +9,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp
 public class TestOpClass extends LinearOpMode {
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -37,9 +40,14 @@ public class TestOpClass extends LinearOpMode {
         armMotor.setPower(Constants.MotorConstants.armAutoSpeed);
 
         DcMotor viperMotor=hardwareMap.dcMotor.get("viperMotor");
+        viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperMotor.setTargetPosition(armMotorPosition);
+        viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperMotor.setPower(Constants.MotorConstants.armAutoSpeed);
+
         CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
         intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
-
+        TouchSensor magArmSensor=hardwareMap.get(TouchSensor.class, "magArmSensor");
         CRServo wristServo= hardwareMap.crservo.get("wristServo");
         waitForStart();
 
@@ -75,29 +83,38 @@ public class TestOpClass extends LinearOpMode {
             double backLeftPower = (y - x + rx) / denominator;
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
+            boolean armMoveManual = false;
 
             frontLeftMotor.setPower(0 - frontLeftPower);
             backLeftMotor.setPower(0 - backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
             viperMotorSpeed=0;
-
-            if(gamepad2.left_bumper){
+            if (magArmSensor.isPressed()) {
+                telemetry.addData("magSensor","true");
+            } else { // Otherwise, run the motor
+                telemetry.addData("magSensor", "false");
+            }
+            if(gamepad1.left_bumper){
                viperMotorSpeed=Constants.MotorConstants.viperMoveSpeed;
             }
-            if(gamepad2.right_bumper){
+            if(gamepad1.right_bumper){
                 viperMotorSpeed=-Constants.MotorConstants.viperMoveSpeed;
+                viperMotor.setTargetPosition(Constants.MotorConstants.viperTopPosition);
+                viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             }
-            viperMotor.setPower(viperMotorSpeed);
+            //viperMotor.setPower(viperMotorSpeed);
 
 
 
             if(gamepad2.dpad_up){
-
+                armMoveManual=true;
                 armMotorPosition=armMotorPosition+Constants.MotorConstants.armMovementSpeed;
             }
             if(gamepad2.dpad_down){
-               armMotorPosition=armMotorPosition-Constants.MotorConstants.armMovementSpeed;
+                armMoveManual=true;
+                armMotorPosition=armMotorPosition-Constants.MotorConstants.armMovementSpeed;
             }
             //armMotor.setPower(armMotorSpeed);
 
@@ -118,19 +135,22 @@ public class TestOpClass extends LinearOpMode {
             // If the right bumper is pressed, lower the arm
             if (gamepad2.right_bumper) {
                 armMotorPosition=Constants.MotorConstants.armPositionDown;
-
             }
             // if the left bumber is pressed, raises arm
 
             if (gamepad2.left_bumper){
                 armMotorPosition=Constants.MotorConstants.armPositionUp;
             }
-            if (((armMotorPosition-lastArmMotorPosition)>Constants.MotorConstants.armMovementThreshold) ||
-            ((armMotorPosition-lastArmMotorPosition)<-Constants.MotorConstants.armMovementThreshold))
-            {
-                armMotor.setTargetPosition(armMotorPosition);
-                lastArmMotorPosition = armMotorPosition;
+            //if new position is more than threshold reset the target
+            if(armMoveManual) {
+                if (((armMotorPosition - lastArmMotorPosition) > Constants.MotorConstants.armMovementThreshold) ||
+                        ((armMotorPosition - lastArmMotorPosition) < -Constants.MotorConstants.armMovementThreshold)) {
+                    armMotor.setTargetPosition(armMotorPosition);
+                    lastArmMotorPosition = armMotorPosition;
+                }
             }
+            telemetry.addData("Viper Position",viperMotor.getCurrentPosition());
+
             telemetry.addData("Arm Position",armMotor.getCurrentPosition());
             telemetry.addData("Arm Target",armMotorPosition);
             telemetry.update();
