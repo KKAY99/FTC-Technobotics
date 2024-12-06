@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp
@@ -44,6 +45,8 @@ public class TestOpClass extends LinearOpMode {
         viperMotor.setTargetPosition(armMotorPosition);
         viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperMotor.setPower(Constants.MotorConstants.armAutoSpeed);
+
+        Servo bucketServo= hardwareMap.servo.get("bucketServo");
 
         CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
         intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -97,6 +100,8 @@ public class TestOpClass extends LinearOpMode {
             }
             if(gamepad1.left_bumper){
                viperMotorSpeed=Constants.MotorConstants.viperMoveSpeed;
+                viperMotor.setTargetPosition(Constants.MotorConstants.viperBottomPosition);
+                viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
             if(gamepad1.right_bumper){
                 viperMotorSpeed=-Constants.MotorConstants.viperMoveSpeed;
@@ -104,7 +109,15 @@ public class TestOpClass extends LinearOpMode {
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             }
-            //viperMotor.setPower(viperMotorSpeed);
+            if(gamepad1.a){
+                bucketServo.setPosition(Constants.MotorConstants.bucketDumpPosition);
+            }
+            if(gamepad1.b){
+                bucketServo.setPosition(Constants.MotorConstants.bucketFlatPosition);
+            }
+            if(gamepad1.y){
+                bucketServo.setPosition(Constants.MotorConstants.bucketLoadPosition);
+            }
 
 
 
@@ -150,7 +163,9 @@ public class TestOpClass extends LinearOpMode {
                 }
             }
             telemetry.addData("Viper Position",viperMotor.getCurrentPosition());
-
+            double bucketPos=bucketServo.getPosition();
+            String bucketPosition=String.format("%.2f",bucketPos);
+            telemetry.addData("Bucket Position",bucketPosition);
             telemetry.addData("Arm Position",armMotor.getCurrentPosition());
             telemetry.addData("Arm Target",armMotorPosition);
             telemetry.update();

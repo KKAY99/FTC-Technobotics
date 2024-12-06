@@ -6,7 +6,12 @@ public final class Constants {
         public static final double viperMoveSpeed=0.6;
         public static final double armMoveUpSpeed=-0.8;
         public static final double armMoveDownSpeed=0.6;
+        public static final int viperBottomPosition=0;
+
         public static final int viperTopPosition=-3900;
+        public static final double bucketFlatPosition=0.85;
+        public static final double bucketDumpPosition=1;
+        public static final double bucketLoadPosition=0.6;
         public static final double intakeMoveSpeed=0.5;
         public static final double wristMoveUpSpeed=0.5;
         public static final double wristMoveDownSpeed=-0.3;
