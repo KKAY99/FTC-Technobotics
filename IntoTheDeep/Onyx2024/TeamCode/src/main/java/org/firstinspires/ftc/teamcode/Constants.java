@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode;
 public final class Constants {
     public final static class MotorConstants {
         public static final double driveSpeed = 0.3;
-        public static final double viperMoveSpeed=0.6;
+        public static final double viperMoveDownSpeed=0.5;
+        public static final double viperMoveUpSpeed=0.9;
         public static final double armMoveUpSpeed=-0.8;
         public static final double armMoveDownSpeed=0.6;
         public static final int viperBottomPosition=0;

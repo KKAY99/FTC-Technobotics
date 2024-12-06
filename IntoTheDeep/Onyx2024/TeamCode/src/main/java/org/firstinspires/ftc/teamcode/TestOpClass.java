@@ -99,12 +99,12 @@ public class TestOpClass extends LinearOpMode {
                 telemetry.addData("magSensor", "false");
             }
             if(gamepad1.left_bumper){
-               viperMotorSpeed=Constants.MotorConstants.viperMoveSpeed;
+               viperMotorSpeed=Constants.MotorConstants.viperMoveDownSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperBottomPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
             if(gamepad1.right_bumper){
-                viperMotorSpeed=-Constants.MotorConstants.viperMoveSpeed;
+                viperMotorSpeed=-Constants.MotorConstants.viperMoveUpSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperTopPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
