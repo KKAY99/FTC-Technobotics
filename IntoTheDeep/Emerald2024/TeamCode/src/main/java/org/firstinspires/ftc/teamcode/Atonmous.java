@@ -25,6 +25,7 @@ public class Atonmous extends LinearOpMode {
         waitForStart();
         ElapsedTime timer=new ElapsedTime();
         timer.reset();
+        boolean stop = true;
 
         double y=1;
         double x=0;
@@ -50,13 +51,20 @@ public class Atonmous extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
-            if(timer.seconds() > 5){
-                frontLeftMotor.setPower(4);
-                frontRightMotor.setPower(4);
-                backLeftMotor.setPower(4);
-                backRightMotor.setPower(4);
+            while (timer.seconds() < 3){
+                frontLeftMotor.setPower(-0.6);
+                frontRightMotor.setPower(0.6);
+                backLeftMotor.setPower(-0.6);
+                backRightMotor.setPower(0.6);
                 stop();
 
+            }
+            while (timer.seconds() > 3 && timer.seconds()< 4.7){
+                frontLeftMotor.setPower(-0.6);
+                frontRightMotor.setPower(-0.6);
+                backLeftMotor.setPower(0.6);
+                backRightMotor.setPower(0.6);
+                stop();
             }
         }
 
