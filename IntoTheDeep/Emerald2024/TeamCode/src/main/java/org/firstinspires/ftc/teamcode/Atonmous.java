@@ -52,18 +52,18 @@ public class Atonmous extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
 
             while (timer.seconds() < 3){
-                frontLeftMotor.setPower(0.6);
-                frontRightMotor.setPower(-0.6);
-                backLeftMotor.setPower(0.6);
-                backRightMotor.setPower(-0.6);
+                frontLeftMotor.setPower(-0.6);
+                frontRightMotor.setPower(0.6);
+                backLeftMotor.setPower(-0.6);
+                backRightMotor.setPower(0.6);
                 stop();
 
             }
             while (timer.seconds() > 3 && timer.seconds()< 4.7){
-                frontLeftMotor.setPower(0.6);
-                frontRightMotor.setPower(0.6);
-                backLeftMotor.setPower(-0.6);
-                backRightMotor.setPower(-0.6);
+                frontLeftMotor.setPower(-0.6);
+                frontRightMotor.setPower(-0.6);
+                backLeftMotor.setPower(0.6);
+                backRightMotor.setPower(0.6);
                 stop();
             }
         }
