@@ -78,7 +78,7 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         while (opModeIsActive()) {
             if (autohasrun==false) {
                 //liftarm(1000);
-                autoDrive(-j                                                                                                                                                                        .6, 0, 0, 20);
+
                 //autoDrive(.6, 0, 1, 120);
                 //autoDrive(.6, 0, 0, 20);
 

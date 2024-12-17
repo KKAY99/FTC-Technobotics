@@ -173,7 +173,7 @@ public class TestOpClass extends LinearOpMode {
                 int currentPosition=armMotor.getCurrentPosition();
                 int distance=Constants.MotorConstants.armPositionUp-currentPosition;
                 if(currentPosition==Constants.MotorConstants){
-                    armMotor.setPower(0);
+                    armMotcor.setPower(0);
                     bMoveUpMode=false;
                 }
                 else {
