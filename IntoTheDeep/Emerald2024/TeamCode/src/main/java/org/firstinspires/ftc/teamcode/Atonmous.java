@@ -10,6 +10,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous
 public class Atonmous extends LinearOpMode {
+    enum States{
+        MOVEFORWARD,ARMEXTEND,ARMUP,WRISTADJUST,CLAWOPEN,END
+    }
+
+    States currentState=States.MOVEFORWARD;
+
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
@@ -19,14 +25,13 @@ public class Atonmous extends LinearOpMode {
         DcMotor armMotor = hardwareMap.dcMotor.get("armMotor");
         DcMotor udarmMotor = hardwareMap.dcMotor.get("udarmMotor");
 
-        Servo clawServo = hardwareMap.servo.get("clawServo");
+        CRServo clawServo = hardwareMap.crservo.get("clawServo");
         CRServo wristServo = hardwareMap.crservo.get("wristServo");
 
         waitForStart();
         ElapsedTime timer=new ElapsedTime();
         timer.reset();
         boolean stop = true;
-
         double y=1;
         double x=0;
         double rx=0;
@@ -51,21 +56,65 @@ public class Atonmous extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
-            while (timer.seconds() < 3){
-                frontLeftMotor.setPower(-0.6);
-                frontRightMotor.setPower(0.6);
-                backLeftMotor.setPower(-0.6);
-                backRightMotor.setPower(0.6);
-                stop();
 
+            switch(currentState){
+                case MOVEFORWARD:
+                    frontLeftMotor.setPower(-0.6);
+                    frontRightMotor.setPower(0.6);
+                    backLeftMotor.setPower(-0.6);
+                    backRightMotor.setPower(0.6);
+
+                    if(timer.seconds()>0.9){
+                        stop();
+                        timer.reset();
+                        currentState = States.ARMUP;
+                    }
+                    break;
+                case ARMUP:
+                    udarmMotor.setPower(0.6);
+
+                    if(timer.seconds()>0.9){
+                        udarmMotor.setPower(0);
+                        stop();
+                        timer.reset();
+                        currentState = States.WRISTADJUST;
+
+                    }
+                    break;
+                case WRISTADJUST:
+                    wristServo.setPower(0.6);
+                    if(timer.seconds() > 0.5) {
+                        wristServo.setPower(0);
+                        stop();
+                        timer.reset();
+                        currentState = States.ARMEXTEND;
+                    }
+                    break;
+                case ARMEXTEND:
+                    //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION;
+                    // armMotor.setTargetPosition();
+                    //ADD CONSTANTS POSITION TALK TO KARL ABOUT GETTING POS VALUES
+
+                    if(timer.seconds() > 0.9) {
+                        armMotor.setPower((0));
+                        stop();
+                        timer.reset();
+                        currentState = States.CLAWOPEN;
+                    }
+                    break;
+                case CLAWOPEN :
+                    clawServo.setPower(0.6);
+                    if(timer.seconds() > 0.2) {
+                        clawServo.setPower(0);
+                        stop();
+                        timer.reset();
+                        currentState = States.CLAWOPEN;
+                    }
+
+
+                case END:
             }
-            while (timer.seconds() > 3 && timer.seconds()< 4.7){
-                frontLeftMotor.setPower(-0.6);
-                frontRightMotor.setPower(-0.6);
-                backLeftMotor.setPower(0.6);
-                backRightMotor.setPower(0.6);
-                stop();
-            }
+
         }
 
     }
