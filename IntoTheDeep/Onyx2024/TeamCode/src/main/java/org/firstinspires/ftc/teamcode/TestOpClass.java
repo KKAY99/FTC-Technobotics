@@ -15,7 +15,25 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @TeleOp
 public class TestOpClass extends LinearOpMode {
 
-
+    private void homeArm(DcMotor armMotor,TouchSensor armSensor){
+        int startArmPos= armMotor.getCurrentPosition(); // get current position
+        int curentArmPos=startArmPos;
+        int targetArmPos;
+        telemetry.addData("Arm Homing:","started");
+        telemetry.update();
+        //move arm down no more than HomeLimit ticks to try to get in the right position
+        // while arm sensor is false and distance between positions < HomeLlimitTicks move arm
+        while (armSensor.isPressed()==false && ((startArmPos-curentArmPos)<Constants.homeLimitTicks)){
+            targetArmPos=curentArmPos-10;
+            armMotor.setTargetPosition(targetArmPos);
+            curentArmPos=armMotor.getCurrentPosition();
+        }
+        /// if movement is stopped than stop a
+        targetArmPos=armMotor.getCurrentPosition();
+        armMotor.setTargetPosition(targetArmPos);
+        telemetry.addData("Arm Homing:","completed");
+        telemetry.update();
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -32,6 +50,8 @@ public class TestOpClass extends LinearOpMode {
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         int armMotorPosition=0;
         int lastArmMotorPosition=0;
+        boolean armHasHomed=false;
+        boolean armAutoMove=false;
         DcMotor armMotor=hardwareMap.dcMotor.get("armMotor");
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 // Reset the motor encoder so that it reads zero ticks
@@ -55,7 +75,10 @@ public class TestOpClass extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-
+        if (armHasHomed==false){
+            homeArm(armMotor,magArmSensor);
+            armHasHomed=true;
+        }
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -72,8 +95,8 @@ public class TestOpClass extends LinearOpMode {
                 maxPower = Constants.MotorConstants.driveSpeed;
             } else {
                 double triggerValue = (gamepad1.left_trigger);
-                maxPower = Constants.MotorConstants.driveSpeed +
-                        ((1 - Constants.MotorConstants.driveSpeed) * triggerValue);
+                maxPower = Constants.MotorConstants.driveSpeed -
+                        ((Constants.MotorConstants.driveSpeed) * triggerValue);
             }
             //limit speed to MaxPower
             y = y * maxPower;
@@ -148,18 +171,29 @@ public class TestOpClass extends LinearOpMode {
             // If the right bumper is pressed, lower the arm
             if (gamepad2.right_bumper) {
                 armMotorPosition=Constants.MotorConstants.armPositionDown;
+                armAutoMove=true;
             }
             // if the left bumber is pressed, raises arm
 
             if (gamepad2.left_bumper){
                 armMotorPosition=Constants.MotorConstants.armPositionUp;
+                armAutoMove=true;
             }
             //if new position is more than threshold reset the target
             if(armMoveManual) {
+                armAutoMove=false;
                 if (((armMotorPosition - lastArmMotorPosition) > Constants.MotorConstants.armMovementThreshold) ||
                         ((armMotorPosition - lastArmMotorPosition) < -Constants.MotorConstants.armMovementThreshold)) {
                     armMotor.setTargetPosition(armMotorPosition);
                     lastArmMotorPosition = armMotorPosition;
+                }
+            } else {
+                if (armAutoMove){
+                    armMotor.setTargetPosition(armMotorPosition);
+                }else {
+                    /// if movement is stopped than stop arm
+                    armMotorPosition = armMotor.getCurrentPosition();
+                    armMotor.setTargetPosition(armMotorPosition);
                 }
             }
             telemetry.addData("Viper Position",viperMotor.getCurrentPosition());
@@ -168,6 +202,7 @@ public class TestOpClass extends LinearOpMode {
             telemetry.addData("Bucket Position",bucketPosition);
             telemetry.addData("Arm Position",armMotor.getCurrentPosition());
             telemetry.addData("Arm Target",armMotorPosition);
+            //telemetry.addData("Elbow Position",wristServo.)
             telemetry.update();
             /*if(bMoveUpMode){
                 int currentPosition=armMotor.getCurrentPosition();
