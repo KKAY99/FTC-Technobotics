@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous
-public class AutoMoveToSampleScore extends LinearOpMode {
+public class AutoMovetoObservationZone extends LinearOpMode {
     private void autoDrive(double xSpeed,double ySpeed,int rotation,double distanceIn) {
         int kticksPerIn=26;
 
@@ -37,6 +36,7 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         int distancetraveled = frontLeftMotor.getCurrentPosition();
         while (distancetraveled <= distance) {
             telemetry.addData("Encoder ", frontLeftMotor.getCurrentPosition());
+            telemetry.addData("Distance Target",distance);
             telemetry.update();
             distancetraveled = Math.abs(frontLeftMotor.getCurrentPosition());
             y = xSpeed; // Remember, Y stick value is reversed
@@ -79,9 +79,8 @@ public class AutoMoveToSampleScore extends LinearOpMode {
             if (autohasrun==false) {
                 //liftarm(1000);
 
-                autoDrive(.6, 0, 0, 1);
-
-                //autoDrive(.5, 0, 1, 5);
+                //autoDrive(.6, 0, 0, 120);
+                autoDrive(.5, 0, 0, 36);
 
                 long timetoopen = 1000;
                 // openclaw(timetoopen);
