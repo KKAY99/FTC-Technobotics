@@ -38,7 +38,8 @@ Constants {
     }
 
     public final static class ViperslideConstants {
-        public static final int ViperSlideMax = -2300;
+        public static final int ViperSlideLimitedPos = -2300;
+        public  static  final int ViperSlideMaxPos = -4000;
     }
 
     public final static class ServoConstants{

@@ -64,7 +64,7 @@ public class Atonmous extends LinearOpMode {
                     backLeftMotor.setPower(-0.6);
                     backRightMotor.setPower(0.6);
 
-                    if(timer.seconds()>0.9){
+                    if(timer.seconds()>0.9) {
                         stop();
                         timer.reset();
                         currentState = States.ARMUP;
@@ -95,12 +95,12 @@ public class Atonmous extends LinearOpMode {
                     // armMotor.setTargetPosition();
                     //ADD CONSTANTS POSITION TALK TO KARL ABOUT GETTING POS VALUES
 
-                    if(timer.seconds() > 0.9) {
-                        armMotor.setPower((0));
-                        stop();
-                        timer.reset();
-                        currentState = States.CLAWOPEN;
-                    }
+                            if(timer.seconds() > 0.9) {
+                                armMotor.setPower((0));
+                                stop();
+                                timer.reset();
+                                currentState = States.CLAWOPEN;
+                            }
                     break;
                 case CLAWOPEN :
                     clawServo.setPower(0.6);
