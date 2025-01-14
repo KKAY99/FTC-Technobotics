@@ -88,78 +88,81 @@ public class TestOpClass extends LinearOpMode {
                 button0 = false;
             }
 
-        if (gamepad2.dpad_up && armMotor.getCurrentPosition() >= MaxPos) {
-            if (armMotor.getCurrentPosition() >= limitedPos || buttonpress) {
+            if (gamepad2.dpad_up && armMotor.getCurrentPosition() >= MaxPos) {
+                if (armMotor.getCurrentPosition() >= limitedPos || buttonpress) {
+                    armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    viperslidepos = armMotor.getCurrentPosition();
+                    armMotor.setPower(-0.6);
+                } else {
+                    armMotor.setTargetPosition(viperslidepos);
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+            } else if (gamepad2.dpad_down) {
                 armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 viperslidepos = armMotor.getCurrentPosition();
-                armMotor.setPower(-0.6);
+                armMotor.setPower(0.6);
             } else {
                 armMotor.setTargetPosition(viperslidepos);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-        } else if (gamepad2.dpad_down) {
-            armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            viperslidepos = armMotor.getCurrentPosition();
-            armMotor.setPower(0.6);
-        } else {
-            armMotor.setTargetPosition(viperslidepos);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            if (gamepad2.left_bumper) {
+                udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                udarmMotor.setPower(0.6);
+                udarmPos = udarmMotor.getCurrentPosition();
+            } else if (gamepad2.right_bumper) {
+                udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                udarmMotor.setPower(-0.6);
+                udarmPos = udarmMotor.getCurrentPosition();
+            } else {
+                udarmMotor.setTargetPosition(udarmPos);
+                udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            }
+
+            double clawSpeed=0;
+            if (gamepad2.x) {
+                clawSpeed = 0.5;
+            }
+            if (gamepad2.triangle) {
+                clawSpeed = -0.5;
+            }
+            clawServo.setPower(clawSpeed);
+
+            double wristSpeed=0;
+            if (gamepad2.left_trigger >= 0.2) {
+                wristSpeed = -0.3;
+            }
+            if (gamepad2.right_trigger >= 0.2) {
+                wristSpeed = 0.3;
+            }
+            wristServo.setPower(wristSpeed);
+
+
+            //limit speed to MaxPower
+            y = y * maxPower;
+            x = x * maxPower;
+            rx = rx * maxPower;
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+
+            frontLeftMotor.setPower(0 - frontLeftPower);
+            backLeftMotor.setPower(0 - backLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backRightMotor.setPower(backRightPower);
+
+
+            telemetry.addData("Viper Slide Postion", armMotor.getCurrentPosition());
+            telemetry.addData("armLimit", armLimit.getValue());
+            telemetry.addData("buttonpress", buttonpress);
+            telemetry.addData("button0", button0);
+            telemetry.update();
+
         }
-
-        if (gamepad2.left_bumper) {
-            udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            udarmMotor.setPower(0.6);
-            udarmPos = udarmMotor.getCurrentPosition();
-        } else if (gamepad2.right_bumper) {
-            udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            udarmMotor.setPower(-0.6);
-            udarmPos = udarmMotor.getCurrentPosition();
-        } else {
-            udarmMotor.setTargetPosition(udarmPos);
-            udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        }
-        if (gamepad2.x) {
-            clawServo.setPower(-0.5);
-        }
-        if (gamepad2.triangle) {
-            clawServo.setPower(0.5);
-        }
-        if (gamepad2.left_trigger > 0.2) {
-            wristServo.setPower(-0.5);
-        } else {
-            wristServo.setPower((0));
-        }
-        if (gamepad2.right_trigger > 0.2) {
-            wristServo.setPower(0.5);
-        } else {
-            wristServo.setPower(0);
-        }
-
-        //limit speed to MaxPower
-        y = y * maxPower;
-        x = x * maxPower;
-        rx = rx * maxPower;
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-        double frontLeftPower = (y + x + rx) / denominator;
-        double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
-
-        frontLeftMotor.setPower(0 - frontLeftPower);
-        backLeftMotor.setPower(0 - backLeftPower);
-        frontRightMotor.setPower(frontRightPower);
-        backRightMotor.setPower(backRightPower);
-
-
-        telemetry.addData("Viper Slide Postion", armMotor.getCurrentPosition());
-        telemetry.addData("armLimit", armLimit.getValue());
-        telemetry.addData("buttonpress", buttonpress);
-        telemetry.addData("button0", button0);
-        telemetry.update();
-
     }
-  }
 }
