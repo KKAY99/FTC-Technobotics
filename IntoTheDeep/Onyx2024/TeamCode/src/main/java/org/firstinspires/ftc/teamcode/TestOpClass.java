@@ -62,7 +62,7 @@ public class TestOpClass extends LinearOpMode {
 
         DcMotor viperMotor=hardwareMap.dcMotor.get("viperMotor");
         viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        viperMotor.setTargetPosition(armMotorPosition);
+        viperMotor.setTargetPosition(0);  // set start position to 0
         viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperMotor.setPower(Constants.MotorConstants.armAutoSpeed);
 
@@ -121,17 +121,29 @@ public class TestOpClass extends LinearOpMode {
             } else { // Otherwise, run the motor
                 telemetry.addData("magSensor", "false");
             }
+
             if(gamepad1.left_bumper){
+                telemetry.addData("Turn Motor Off","false");
+                viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                viperMotorSpeed=Constants.MotorConstants.viperMoveDownSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperBottomPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
+
             if(gamepad1.right_bumper){
+                telemetry.addData("Turn Motor Off","false");
+                viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 viperMotorSpeed=-Constants.MotorConstants.viperMoveUpSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperTopPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+            }else{
+                if(viperMotor.getCurrentPosition()>=Constants.MotorConstants.viperBottomPosition) {
+                    telemetry.addData("Turn Motor Off", "true");
+                    viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                }
             }
+
             if(gamepad1.a){
                 bucketServo.setPosition(Constants.MotorConstants.bucketDumpPosition);
             }

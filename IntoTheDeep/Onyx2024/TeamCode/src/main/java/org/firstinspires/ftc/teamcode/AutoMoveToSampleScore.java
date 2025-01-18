@@ -149,7 +149,7 @@ public class AutoMoveToSampleScore extends LinearOpMode {
                 //liftarm(1000);
 
                 autoDrive(0.6, 0, 0, 75);
-                autoDrive(0, 0, 1, 50);
+                autoDrive(0, 0, 1, 200);
                 autoDrive(-0.6, 0, 0, 287);
                 liftViperSlide();
                 tiltBasket();
