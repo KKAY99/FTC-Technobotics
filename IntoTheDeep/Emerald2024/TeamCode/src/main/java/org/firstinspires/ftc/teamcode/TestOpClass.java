@@ -45,6 +45,9 @@ public class TestOpClass extends LinearOpMode {
         boolean button0 = false;
         boolean buttonpress2 = false;
 
+        //do we need this??
+        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODERS);
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -87,7 +90,28 @@ public class TestOpClass extends LinearOpMode {
                 buttonpress = false;
                 button0 = false;
             }
+/* above code seems to have a bug when going from true to false. will this work?
+    Also button0 and buttonpress2 does not seem to have any purpose above
+             if (armLimit.getValue() == 1 && !buttonpress) 
+			  {
+                buttonpress = true;
+               } 
+             else if (armLimit.getValue() == 0 && buttonpress) 
+			      {
+                   buttonpress = false;
+				    //if the viperslide is longer than the limitedPos then move it 
+                    //down to that limit because the arm has moved down to horizontal position
+                    if armMotor.getCurrentPosition() > limitedPos 
+					   {
+						armMotor.setTargetPosition(limitedPos);
+						armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+						armMotor.setPower(0.6);
+					    }
+                   }
+*/
 
+
+            
             if (gamepad2.dpad_up && armMotor.getCurrentPosition() >= MaxPos) {
                 if (armMotor.getCurrentPosition() >= limitedPos || buttonpress) {
                     armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -161,6 +185,7 @@ public class TestOpClass extends LinearOpMode {
             telemetry.addData("armLimit", armLimit.getValue());
             telemetry.addData("buttonpress", buttonpress);
             telemetry.addData("button0", button0);
+            //telemetry.addData("armLimit.getValue()", armLimit.getValue());
             telemetry.update();
 
         }
