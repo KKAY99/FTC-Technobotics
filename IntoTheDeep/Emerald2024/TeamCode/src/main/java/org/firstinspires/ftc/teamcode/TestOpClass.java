@@ -85,32 +85,33 @@ public class TestOpClass extends LinearOpMode {
                 button0 = true;
             } else if (button0 && armLimit.getValue() == 1) {
                 buttonpress2 = true;
-            } else if (armLimit.getValue() == 0 && buttonpress && button0 && buttonpress2) {
+            } else if (armLimit.getValue() == 0 && buttonpress && button0 && buttonpress2)
+            {
                 buttonpress2 = false;
                 buttonpress = false;
-		button0 = false;
+		        button0 = false;
 		//Following If statement is to bring the arm in when its being lowered so it doesnt exceed the horizontal limit of 42 inches
-		if armMotor.getCurrentPosition() < limitedPos 
-		   {
-			armMotor.setTargetPosition(limitedPos);
-			armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-			armMotor.setPower(0.6);
-		    }
-            }
+		        if (armMotor.getCurrentPosition() > limitedPos)
+		         {
+			      armMotor.setTargetPosition(limitedPos);
+			      armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                  armMotor.setPower(1);
+		         }
+              }
 
 	  //Get current position of the viperslide to be able to fight gravity by holding the slide in the following dpad If logic
            viperslidepos = armMotor.getCurrentPosition();	
 	   if (gamepad2.dpad_up && armMotor.getCurrentPosition() >= MaxPos) {
                 if (armMotor.getCurrentPosition() >= limitedPos || buttonpress) {
                     armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    armMotor.setPower(-0.6);
+                    armMotor.setPower(-1);
                 } else {
                     armMotor.setTargetPosition(viperslidepos);
                     armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
             } else if (gamepad2.dpad_down) {
                 armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                armMotor.setPower(0.6);
+                armMotor.setPower(1);
             } else {
                 armMotor.setTargetPosition(viperslidepos);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -118,11 +119,11 @@ public class TestOpClass extends LinearOpMode {
 
             if (gamepad2.left_bumper) {
                 udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                udarmMotor.setPower(0.6);
+                udarmMotor.setPower(0.4);
                 udarmPos = udarmMotor.getCurrentPosition();
             } else if (gamepad2.right_bumper) {
                 udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                udarmMotor.setPower(-0.6);
+                udarmMotor.setPower(-0.4);
                 udarmPos = udarmMotor.getCurrentPosition();
             } else {
                 udarmMotor.setTargetPosition(udarmPos);
@@ -170,9 +171,10 @@ public class TestOpClass extends LinearOpMode {
             telemetry.addData("Viper Slide Postion", armMotor.getCurrentPosition());
             telemetry.addData("armLimit", armLimit.getValue());
             telemetry.addData("buttonpress", buttonpress);
-	    telemetry.addData("buttonpress2", buttonpress2);
+	        telemetry.addData("buttonpress2", buttonpress2);
             telemetry.addData("button0", button0);
-            telemetry.addData("armLimit.getValue()", armLimit.getValue());
+            telemetry.addData("limitedPos", limitedPos);
+            telemetry.addData("MaxPos", MaxPos);
             telemetry.update();
 
         }

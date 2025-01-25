@@ -75,10 +75,10 @@ public class TestOpClass extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-        if (armHasHomed==false){
-            homeArm(armMotor,magArmSensor);
-            armHasHomed=true;
-        }
+       // if (armHasHomed==false){
+         //   homeArm(armMotor,magArmSensor);
+           // armHasHomed=true;
+        //}
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -183,17 +183,20 @@ public class TestOpClass extends LinearOpMode {
                 wristMotorSpeed=Constants.MotorConstants.wristMoveDownSpeed;
             }
             wristServo.setPower(wristMotorSpeed);
+            /*
             // If the right bumper is pressed, lower the arm
             if (gamepad2.right_bumper) {
                 armMotorPosition=Constants.MotorConstants.armPositionDown;
                 armAutoMove=true;
             }
+
             // if the left bumber is pressed, raises arm
 
             if (gamepad2.left_bumper){
                 armMotorPosition=Constants.MotorConstants.armPositionUp;
                 armAutoMove=true;
             }
+            */
             //if new position is more than threshold reset the target
             if(armMoveManual) {
                 armAutoMove=false;
