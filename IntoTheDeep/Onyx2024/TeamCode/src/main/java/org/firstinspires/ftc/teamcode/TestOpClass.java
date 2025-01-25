@@ -128,6 +128,7 @@ public class TestOpClass extends LinearOpMode {
                viperMotorSpeed=Constants.MotorConstants.viperMoveDownSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperBottomPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                viperMotor.setPower(viperMotorSpeed);
             }
 
             if(gamepad1.right_bumper){
@@ -136,11 +137,13 @@ public class TestOpClass extends LinearOpMode {
                 viperMotorSpeed=-Constants.MotorConstants.viperMoveUpSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperTopPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+                viperMotor.setPower(viperMotorSpeed);
             }else{
                 if(viperMotor.getCurrentPosition()>=Constants.MotorConstants.viperBottomPosition) {
                     telemetry.addData("Turn Motor Off", "true");
+                    viperMotor.setPower(0);
                     viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    viperMotor.setPower(0);          
                 }
             }
 

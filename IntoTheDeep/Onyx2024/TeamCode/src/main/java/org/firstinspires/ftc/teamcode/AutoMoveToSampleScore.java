@@ -58,11 +58,11 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         backRightMotor.setPower(0);
 
     }
-    private void liftViperSlide() {
-        DcMotor viperMotor = hardwareMap.dcMotor.get("viperMotor");
-        viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    private void liftViperSlide(DcMotor viperMotor) {
+
         viperMotor.setPower(-Constants.MotorConstants.viperMoveUpSpeed);
         viperMotor.setTargetPosition(Constants.MotorConstants.viperTopPosition);
+
         viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (viperMotor.getCurrentPosition() > Constants.MotorConstants.viperTopPosition) {
             telemetry.addData("Viper Move Auto", "Waiting " + viperMotor.getCurrentPosition());
@@ -72,9 +72,7 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         telemetry.addData("Viper Move Auto", "Completed");
         telemetry.update();
     }
-    private void downViperSlide() {
-        DcMotor viperMotor = hardwareMap.dcMotor.get("viperMotor");
-        viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    private void downViperSlide(DcMotor viperMotor) {
         viperMotor.setPower(-Constants.MotorConstants.viperMoveDownSpeed);
         viperMotor.setTargetPosition(Constants.MotorConstants.viperBottomPosition);
         viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -86,9 +84,9 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         telemetry.addData("Viper Move Auto", "Completed");
         telemetry.update();
     }
-    private void tiltBasket() {
+    private void tiltBasketFoward() {
         Servo bucketServo= hardwareMap.servo.get("bucketServo");
-        bucketServo.setPosition(Constants.MotorConstants.bucketDumpPosition);
+        bucketServo.setPosition(Constants.MotorConstants.bucketAutoDropPosition);
         sleep(500);
     }
     private void flatBasket() {
@@ -96,16 +94,16 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         bucketServo.setPosition(Constants.MotorConstants.bucketFlatPosition);
         sleep(500);
     }
-    private void pickUpSample() {
-        CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
+    private void pickUpSample(CRServo intakeServo) {
+
         intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
         double intakeMotorSpeed = Constants.MotorConstants.intakeMoveSpeed;
         intakeServo.setPower(intakeMotorSpeed);
         sleep(500);
         intakeServo.setPower(0);
     }
-    private void releaseSample() {
-        CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
+    private void releaseSample(CRServo intakeServo) {
+
         intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
         double intakeMotorSpeed = Constants.MotorConstants.intakeMoveSpeed;
         intakeServo.setPower(intakeMotorSpeed);
@@ -119,6 +117,7 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         sleep(500);
         wristServo.setPower(0);
     }
+
     private void moveWristDown() {
         CRServo wristServo= hardwareMap.crservo.get("wristServo");
         double wristMotorSpeed =Constants.MotorConstants.wristMoveDownSpeed;
@@ -126,6 +125,20 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         sleep(500);
         wristServo.setPower(0);
     }
+    private void autoStep(int delay,DcMotor armMotor,CRServo intakeServo, Servo bucketServo){
+        double bucketPos=bucketServo.getPosition();
+        String bucketPosition=String.format("%.2f",bucketPos);
+        telemetry.addData("Bucket Position",bucketPosition);
+      //  telemetry.addData("Intake Position",intakeServo.getP);
+        telemetry.addData("Arm Position",armMotor.getCurrentPosition());
+        //telemetry.addData("Elbow Position",wristServo.)
+        telemetry.update();
+        if(delay>0) {
+            sleep(delay);
+        }
+
+    }
+
 /* FROM 2023 Robot
     private void liftarm(long timetoopen){
         DcMotor armMotor = hardwareMap.dcMotor.get("armMotor");
@@ -140,6 +153,15 @@ public class AutoMoveToSampleScore extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
+        Servo bucketServo= hardwareMap.servo.get("bucketServo");
+        DcMotor armMotor=hardwareMap.dcMotor.get("armMotor");
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // Reset the motor encoder so that it reads zero ticks
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        DcMotor viperMotor=hardwareMap.dcMotor.get("viperMotor");
+        viperMotor.setTargetPosition(0);  // set start position to 0
+        viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         waitForStart();
 
         if (isStopRequested()) return;
@@ -147,25 +169,49 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         while (opModeIsActive()) {
             if (autohasrun==false) {
                 //liftarm(1000);
-
+                autoStep(0,armMotor,intakeServo,bucketServo);
                 autoDrive(0.6, 0, 0, 75);
-                autoDrive(0, 0, 1, 200);
+                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoDrive(0, 0, 1, 250);
+                autoStep(50,armMotor,intakeServo,bucketServo);
+
                 autoDrive(-0.6, 0, 0, 287);
-                liftViperSlide();
-                tiltBasket();
+                autoStep(50,armMotor,intakeServo,bucketServo);
+
+                liftViperSlide(viperMotor);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
+
+
+                tiltBasketFoward();
+                autoStep(20000,armMotor,intakeServo,bucketServo);
+
                 autoDrive(0, 0, -1, 50);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
+
                 autoDrive(-0.6, 0, 0, 575);
-                pickUpSample();
-                downViperSlide();
+                autoStep(2000,armMotor,intakeServo,bucketServo);
+
+                pickUpSample(intakeServo);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
+                downViperSlide(viperMotor);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
                 flatBasket();
+                autoStep(2000,armMotor,intakeServo,bucketServo);
                 moveWristUp();
-                releaseSample();
+                autoStep(2000,armMotor,intakeServo,bucketServo);
+                releaseSample(intakeServo);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
                 moveWristDown();
-                liftViperSlide();
+                autoStep(2000,armMotor,intakeServo,bucketServo);
+                liftViperSlide(viperMotor);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
                 autoDrive(-0.6, 0, 0, 575);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
                 autoDrive(0, 0, -1, 25);
-                tiltBasket();
+                autoStep(2000,armMotor,intakeServo,bucketServo);
+                tiltBasketFoward();
                 autoDrive(0, 0, -1, 26);
+                autoStep(2000,armMotor,intakeServo,bucketServo);
                 autoDrive(0.6, 0, 0, 2962);
 
                 long timetoopen = 1000;
