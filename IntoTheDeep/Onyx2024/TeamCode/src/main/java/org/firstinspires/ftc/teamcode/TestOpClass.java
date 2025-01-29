@@ -173,7 +173,7 @@ public class TestOpClass extends LinearOpMode {
                 intakeMotorSpeed=Constants.MotorConstants.intakeMoveSpeed;
             }
             if(gamepad2.b){
-                intakeMotorSpeed=-Constants.MotorConstants.intakeMoveSpeed;
+                intakeMotorSpeed=Constants.MotorConstants.intakeMoveUpSpeed;
             }
             intakeServo.setPower(intakeMotorSpeed);
             if(gamepad2.y){

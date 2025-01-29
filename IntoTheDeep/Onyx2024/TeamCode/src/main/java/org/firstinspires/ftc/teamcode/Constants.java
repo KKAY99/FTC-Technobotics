@@ -16,6 +16,8 @@ public final class Constants {
         public static final double bucketLoadPosition=0.1;
         public static final double bucketAutoDropPosition=1;
         public static final double intakeMoveSpeed=0.7;
+        public static final double intakeMoveUpSpeed=-1.0;
+
         public static final double wristMoveUpSpeed=0.5;
         public static final double wristMoveDownSpeed=-0.5;
         public static final int armPositionUp=-150;
