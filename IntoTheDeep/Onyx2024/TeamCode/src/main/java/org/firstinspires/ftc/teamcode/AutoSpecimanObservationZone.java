@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
-public class AutoMoveToSampleScore extends LinearOpMode {
+public class AutoSpecimanObservationZone extends LinearOpMode {
     private void autoDrive(double xSpeed,double ySpeed,int rotation,int ticksToTravel) {
       // pass in distance in ticks
 
@@ -168,51 +168,13 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         boolean autohasrun=false;
         while (opModeIsActive()) {
             if (autohasrun==false) {
-                //liftarm(1000);
-                autoStep(0,armMotor,intakeServo,bucketServo);
-                autoDrive(0.6, 0, 0, 75);
-                autoStep(50,armMotor,intakeServo,bucketServo);
-                autoDrive(0, 0.6, 0,2000 );
-                autoStep(2000,armMotor,intakeServo,bucketServo);
+                autoDrive(-0.6, 0, 0, 1010);
+                autoStep(100,armMotor,intakeServo,bucketServo);
+                autoDrive(0.6, 0, 0, 1000);
+                autoStep(100,armMotor,intakeServo,bucketServo);
 
-                autoDrive(0, 0, 1, 250);
-                autoStep(50,armMotor,intakeServo,bucketServo);
-
-                liftViperSlide(viperMotor);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-
-
-                tiltBasketFoward();
-                autoStep(20000,armMotor,intakeServo,bucketServo);
-
-                autoDrive(0, 0, -1, 50);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-
-                autoDrive(-0.6, 0, 0, 575);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-
-                pickUpSample(intakeServo);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                downViperSlide(viperMotor);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                flatBasket();
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                moveWristUp();
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                releaseSample(intakeServo);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                moveWristDown();
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                liftViperSlide(viperMotor);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                autoDrive(-0.6, 0, 0, 575);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                autoDrive(0, 0, -1, 25);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                tiltBasketFoward();
-                autoDrive(0, 0, -1, 26);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                autoDrive(0.6, 0, 0, 2962);
+                autoDrive(0, -0.5, 0, 1872);
+                autoStep(100,armMotor,intakeServo,bucketServo);
 
                 long timetoopen = 1000;
                 // openclaw(timetoopen);
