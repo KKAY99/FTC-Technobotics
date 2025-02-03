@@ -75,10 +75,10 @@ public class TestOpClass extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-        if (armHasHomed==false){
-            homeArm(armMotor,magArmSensor);
-            armHasHomed=true;
-        }
+       // if (armHasHomed==false){
+         //   homeArm(armMotor,magArmSensor);
+           // armHasHomed=true;
+        //}
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -128,6 +128,7 @@ public class TestOpClass extends LinearOpMode {
                viperMotorSpeed=Constants.MotorConstants.viperMoveDownSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperBottomPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                viperMotor.setPower(viperMotorSpeed);
             }
 
             if(gamepad1.right_bumper){
@@ -136,11 +137,13 @@ public class TestOpClass extends LinearOpMode {
                 viperMotorSpeed=-Constants.MotorConstants.viperMoveUpSpeed;
                 viperMotor.setTargetPosition(Constants.MotorConstants.viperTopPosition);
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+                viperMotor.setPower(viperMotorSpeed);
             }else{
                 if(viperMotor.getCurrentPosition()>=Constants.MotorConstants.viperBottomPosition) {
                     telemetry.addData("Turn Motor Off", "true");
+                    viperMotor.setPower(0);
                     viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    viperMotor.setPower(0);          
                 }
             }
 
@@ -170,7 +173,7 @@ public class TestOpClass extends LinearOpMode {
                 intakeMotorSpeed=Constants.MotorConstants.intakeMoveSpeed;
             }
             if(gamepad2.b){
-                intakeMotorSpeed=-Constants.MotorConstants.intakeMoveSpeed;
+                intakeMotorSpeed=Constants.MotorConstants.intakeMoveUpSpeed;
             }
             intakeServo.setPower(intakeMotorSpeed);
             if(gamepad2.y){
@@ -180,17 +183,20 @@ public class TestOpClass extends LinearOpMode {
                 wristMotorSpeed=Constants.MotorConstants.wristMoveDownSpeed;
             }
             wristServo.setPower(wristMotorSpeed);
+            /*
             // If the right bumper is pressed, lower the arm
             if (gamepad2.right_bumper) {
                 armMotorPosition=Constants.MotorConstants.armPositionDown;
                 armAutoMove=true;
             }
+
             // if the left bumber is pressed, raises arm
 
             if (gamepad2.left_bumper){
                 armMotorPosition=Constants.MotorConstants.armPositionUp;
                 armAutoMove=true;
             }
+            */
             //if new position is more than threshold reset the target
             if(armMoveManual) {
                 armAutoMove=false;
