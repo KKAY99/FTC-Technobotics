@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.Constants;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -35,6 +33,9 @@ public class TestOpClass extends LinearOpMode {
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        //This statement is to initialize the position counter at zero.  Don't use with current code but this may be handy later. -Coach Matt
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         int udarmPos = udarmMotor.getCurrentPosition();
         int viperslidepos = armMotor.getCurrentPosition();
 
@@ -44,9 +45,7 @@ public class TestOpClass extends LinearOpMode {
         boolean buttonpress = false;
         boolean button0 = false;
         boolean buttonpress2 = false;
-
-        //This statement is to initialize the position counter at zero.  Don't use with current code but this may be handy later. -Coach Matt
-        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODERS);
+        boolean setViperPOS = false;
 
         waitForStart();
 
@@ -77,7 +76,7 @@ public class TestOpClass extends LinearOpMode {
                     maxPower = 0.1;
                 }
             }
-
+  /*
             //if (armLimit.getValue())
             if (armLimit.getValue() == 1 && !buttonpress) {
                 buttonpress = true;
@@ -86,6 +85,47 @@ public class TestOpClass extends LinearOpMode {
             } else if (button0 && armLimit.getValue() == 1) {
                 buttonpress2 = true;
             } else if (armLimit.getValue() == 0 && buttonpress && button0 && buttonpress2)
+<<<<<<< HEAD
+              {
+                buttonpress2 = false;
+                buttonpress = false;
+                button0 = false;
+		//Following If statement is to bring the arm in when its being lowered so it doesnt exceed the horizontal limit of 42 inches
+		        if (armMotor.getCurrentPosition() < limitedPos)
+                   {
+			        armMotor.setTargetPosition(limitedPos);
+			        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+			        armMotor.setPower(0.6);
+		            }
+                }
+      */
+            //if (armLimit.getValue())
+            if (armLimit.getValue() == 1)
+            {
+                buttonpress = true;
+                setViperPOS = false;
+            } else
+            {
+                buttonpress = false;
+                //Following If statement is to bring the arm in when its being lowered so it doesnt exceed the horizontal limit of 42 inches
+                if (armMotor.getCurrentPosition() < limitedPos)
+                {
+                    if (!setViperPOS) {
+                        setViperPOS = true;
+                        armMotor.setTargetPosition(limitedPos);
+                        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        armMotor.setPower(1);
+                    }
+                } else
+                {
+                    if (setViperPOS) {
+                        armMotor.setPower(0);
+                        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        setViperPOS = false;
+                    }
+                }
+            }
+=======
             {
                 buttonpress2 = false;
                 buttonpress = false;
@@ -98,6 +138,9 @@ public class TestOpClass extends LinearOpMode {
                   armMotor.setPower(1);
 		         }
               }
+>>>>>>> b03edd362f1db5529ddef805e8f23d4fc5d4395c
+
+
 
 	  //Get current position of the viperslide to be able to fight gravity by holding the slide in the following dpad If logic
            viperslidepos = armMotor.getCurrentPosition();	
@@ -113,17 +156,28 @@ public class TestOpClass extends LinearOpMode {
                 armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 armMotor.setPower(1);
             } else {
-                armMotor.setTargetPosition(viperslidepos);
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                     if (!setViperPOS)
+                     {
+                         armMotor.setTargetPosition(viperslidepos);
+                         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                     }
             }
 
             if (gamepad2.left_bumper) {
                 udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+<<<<<<< HEAD
+                udarmMotor.setPower(0.5);
+                udarmPos = udarmMotor.getCurrentPosition();
+            } else if (gamepad2.right_bumper) {
+                udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                udarmMotor.setPower(-0.5);
+=======
                 udarmMotor.setPower(0.4);
                 udarmPos = udarmMotor.getCurrentPosition();
             } else if (gamepad2.right_bumper) {
                 udarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 udarmMotor.setPower(-0.4);
+>>>>>>> b03edd362f1db5529ddef805e8f23d4fc5d4395c
                 udarmPos = udarmMotor.getCurrentPosition();
             } else {
                 udarmMotor.setTargetPosition(udarmPos);
@@ -171,10 +225,16 @@ public class TestOpClass extends LinearOpMode {
             telemetry.addData("Viper Slide Postion", armMotor.getCurrentPosition());
             telemetry.addData("armLimit", armLimit.getValue());
             telemetry.addData("buttonpress", buttonpress);
+<<<<<<< HEAD
+            telemetry.addData("limitePos", limitedPos);
+            telemetry.addData("MaxPos", MaxPos);
+            telemetry.addData("setViperPOS", setViperPOS);
+=======
 	        telemetry.addData("buttonpress2", buttonpress2);
             telemetry.addData("button0", button0);
             telemetry.addData("limitedPos", limitedPos);
             telemetry.addData("MaxPos", MaxPos);
+>>>>>>> b03edd362f1db5529ddef805e8f23d4fc5d4395c
             telemetry.update();
 
         }
