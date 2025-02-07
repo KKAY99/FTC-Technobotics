@@ -217,7 +217,7 @@ public class TestOpClass extends LinearOpMode {
             telemetry.addData("Viper Position",viperMotor.getCurrentPosition());
             double bucketPos=bucketServo.getPosition();
             String bucketPosition=String.format("%.2f",bucketPos);
-            telemetry.addData("Bucket Position",bucketPosition);
+            telemetry.addData("Bucket Position",bucketPos);
             telemetry.addData("Arm Position",armMotor.getCurrentPosition());
             telemetry.addData("Arm Target",armMotorPosition);
             //telemetry.addData("Elbow Position",wristServo.)
