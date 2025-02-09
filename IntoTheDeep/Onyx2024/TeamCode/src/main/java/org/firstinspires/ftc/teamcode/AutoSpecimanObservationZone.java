@@ -168,9 +168,9 @@ public class AutoSpecimanObservationZone extends LinearOpMode {
         boolean autohasrun=false;
         while (opModeIsActive()) {
             if (autohasrun==false) {
-                autoDrive(-0.6, 0, 0, 1010);
+                autoDrive(-0.6, 0, 0, 1150);
                 autoStep(100,armMotor,intakeServo,bucketServo);
-                autoDrive(0.6, 0, 0, 1000);
+                autoDrive(0.6, 0, 0, 1010);
                 autoStep(100,armMotor,intakeServo,bucketServo);
 
                 autoDrive(0, -0.5, 0, 1872);
