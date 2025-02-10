@@ -139,7 +139,7 @@ public class TestOpClass extends LinearOpMode {
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 viperMotor.setPower(viperMotorSpeed);
             }else{
-                if(viperMotor.getCurrentPosition()>=Constants.MotorConstants.viperBottomPosition) {
+                if(viperMotor.getCurrentPosition()>=Constants.MotorConstants.viperBottomStopMotor) {
                     telemetry.addData("Turn Motor Off", "true");
                     viperMotor.setPower(0);
                     viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
