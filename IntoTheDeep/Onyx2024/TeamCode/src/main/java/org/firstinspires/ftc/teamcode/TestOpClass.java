@@ -176,10 +176,10 @@ public class TestOpClass extends LinearOpMode {
                 intakeMotorSpeed=Constants.MotorConstants.intakeMoveUpSpeed;
             }
             intakeServo.setPower(intakeMotorSpeed);
-            if(gamepad2.y){
+            if(gamepad2.y | (gamepad2.right_trigger!=0) ){
                 wristMotorSpeed=Constants.MotorConstants.wristMoveUpSpeed;
             }
-            if(gamepad2.a){
+            if(gamepad2.a | (gamepad2.left_trigger!=0)){
                 wristMotorSpeed=Constants.MotorConstants.wristMoveDownSpeed;
             }
             wristServo.setPower(wristMotorSpeed);
