@@ -13,7 +13,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Atonmous extends LinearOpMode {
     enum States{
         MOVEFORWARD,ARMEXTEND,ARMUP,WRISTADJUSTBACK,
-        WRISTADJUSTFRONT,ARMEXTENDDOWN,ARMDOWN,MOVEBACK,WRISTADJUSTBACK2,ROBOTADJUST,CLAWOPEN,END
+        WRISTADJUSTFRONT,ARMEXTENDDOWN,ARMDOWN,MOVEBACK,
+        WRISTADJUSTBACK2,ROBOTADJUST,ROBOTADJUST2,TURNRIGHT90,
+        TURNRIGHT902,MOVETOSUB,ARMUP2,MOVEFORWARD2,MOVEBACK2,CLAWOPEN,END
     }
 //2667 is the scoring point
 
@@ -196,7 +198,7 @@ public class Atonmous extends LinearOpMode {
                     backLeftMotor.setPower(0.6);
                     backRightMotor.setPower(-0.6);
 
-                    if(timer.seconds()>0.5) {
+                    if(timer.seconds()>0.35) {
                         frontLeftMotor.setPower(0);
                         frontRightMotor.setPower(0);
                         backLeftMotor.setPower(0);
@@ -213,10 +215,122 @@ public class Atonmous extends LinearOpMode {
                     udarmMotor.setPower(0.5);
                     armUpStablize = false;
 
-                    currentState = States.END;
+                    currentState = States.ROBOTADJUST2;
                     sleep(delay);
                     timer.reset();
                     break;
+                case ROBOTADJUST2 :
+                    frontLeftMotor.setPower(-0.6);
+                    frontRightMotor.setPower(-0.6);
+                    backLeftMotor.setPower(-0.6);
+                    backRightMotor.setPower(-0.6);
+
+                    if(timer.seconds() > 0.2) {
+                        stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.MOVEBACK2;
+                    }
+                    break;
+                case MOVEBACK2 :
+                    frontLeftMotor.setPower(0.6);
+                    frontRightMotor.setPower(-0.6);
+                    backLeftMotor.setPower(0.6);
+                    backRightMotor.setPower(-0.6);
+
+                    if(timer.seconds()>0.35) {
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        stop();
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.TURNRIGHT90;
+                    }
+                    break;
+                case TURNRIGHT90 :
+                    frontLeftMotor.setPower(-0.6);
+                    frontRightMotor.setPower(-0.6);
+                    backLeftMotor.setPower(-0.6);
+                    backRightMotor.setPower(-0.6);
+
+                    if(timer.seconds() > 0.5) {
+                        stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.MOVEFORWARD2;
+                    }
+                    break;
+                case MOVEFORWARD2 :
+                    frontLeftMotor.setPower(-0.6);
+                    frontRightMotor.setPower(0.6);
+                    backLeftMotor.setPower(-0.6);
+                    backRightMotor.setPower(0.6);
+
+                    if(timer.seconds() > 0.8) {
+                        stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.TURNRIGHT902;
+                    }
+                    break;
+                case TURNRIGHT902 :
+                    frontLeftMotor.setPower(-0.6);
+                    frontRightMotor.setPower(-0.6);
+                    backLeftMotor.setPower(-0.6);
+                    backRightMotor.setPower(-0.6);
+
+                    if(timer.seconds() > 0.5) {
+                        stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.ARMUP2;
+                    }
+                    break;
+                case ARMUP2 :
+                    udarmMotor.setTargetPosition(udarmMaxPos);
+                    udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    udarmMotor.setPower(-0.5);
+                    armUpStablize = true;
+
+                    currentState = States.MOVETOSUB;
+                    sleep(delay);
+                    timer.reset();
+                    break;
+                case MOVETOSUB :
+                    frontLeftMotor.setPower(-0.6);
+                    frontRightMotor.setPower(0.6);
+                    backLeftMotor.setPower(-0.6);
+                    backRightMotor.setPower(0.6);
+
+                    if(timer.seconds() > 0.5) {
+                        stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.END;
+                    }
+
                 case END:
             }
             telemetry.addData("current State", currentState);
