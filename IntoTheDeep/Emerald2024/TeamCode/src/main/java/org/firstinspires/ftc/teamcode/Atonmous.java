@@ -7,13 +7,17 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous
 public class Atonmous extends LinearOpMode {
     enum States{
-        MOVEFORWARD,ARMEXTEND,ARMUP,WRISTADJUST,CLAWOPEN,END
+        MOVEFORWARD,ARMEXTEND,ARMUP,WRISTADJUSTBACK,
+        WRISTADJUSTFRONT,ARMEXTENDDOWN,ARMDOWN,MOVEBACK,WRISTADJUSTBACK2,ROBOTADJUST,CLAWOPEN,END
     }
+//2667 is the scoring point
 
+// 0 is starting postion and set it to the starting position before turning it on
     States currentState=States.MOVEFORWARD;
 
     @Override
@@ -28,14 +32,26 @@ public class Atonmous extends LinearOpMode {
         CRServo clawServo = hardwareMap.crservo.get("clawServo");
         CRServo wristServo = hardwareMap.crservo.get("wristServo");
 
+        TouchSensor armLimit = hardwareMap.touchSensor.get("armLimit");
+
+
         waitForStart();
-        ElapsedTime timer=new ElapsedTime();
+        ElapsedTime timer = new ElapsedTime();
         timer.reset();
         boolean stop = true;
+        boolean armUpStablize = false;
         double y=1;
         double x=0;
         double rx=0;
+        int udarmMaxPos = 2667;
         double maxPower = Constants.MotorConstants.driveSpeed;
+        int delay = 2000;
+
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int MaxPos = armMotor.getCurrentPosition() + Constants.ViperslideConstants.ViperSlideMaxPos;
+        int limitedPos = armMotor.getCurrentPosition() + Constants.ViperslideConstants.ViperSlideLimitedPos;
 
         if (isStopRequested()) return;
 
@@ -56,6 +72,11 @@ public class Atonmous extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
+            if (armUpStablize) {
+                udarmMotor.setTargetPosition(udarmMaxPos);
+                udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                udarmMotor.setPower(-0.5);
+            }
 
             switch(currentState){
                 case MOVEFORWARD:
@@ -64,28 +85,50 @@ public class Atonmous extends LinearOpMode {
                     backLeftMotor.setPower(-0.6);
                     backRightMotor.setPower(0.6);
 
-                    if(timer.seconds()>0.9) {
+                    if(timer.seconds() > 0.8) {
                         stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.ROBOTADJUST;
+                    }
+                    break;
+                case ROBOTADJUST :
+                    frontLeftMotor.setPower(0.6);
+                    frontRightMotor.setPower(0.6);
+                    backLeftMotor.setPower(0.6);
+                    backRightMotor.setPower(0.6);
+
+                    if(timer.seconds() > 0.2) {
+                        stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
                         timer.reset();
                         currentState = States.ARMUP;
                     }
                     break;
                 case ARMUP:
-                    udarmMotor.setPower(0.6);
+                    udarmMotor.setTargetPosition(udarmMaxPos);
+                    udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    udarmMotor.setPower(-0.5);
+                    armUpStablize = true;
 
-                    if(timer.seconds()>0.9){
-                        udarmMotor.setPower(0);
-                        stop();
-                        timer.reset();
-                        currentState = States.WRISTADJUST;
-
-                    }
+                    currentState = States.WRISTADJUSTBACK;
+                    sleep(delay);
+                    timer.reset();
                     break;
-                case WRISTADJUST:
+                case WRISTADJUSTBACK:
                     wristServo.setPower(0.6);
-                    if(timer.seconds() > 0.5) {
+                    if(timer.seconds() > 2) {
                         wristServo.setPower(0);
                         stop();
+                        sleep(delay);
                         timer.reset();
                         currentState = States.ARMEXTEND;
                     }
@@ -94,27 +137,92 @@ public class Atonmous extends LinearOpMode {
                     //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION;
                     // armMotor.setTargetPosition();
                     //ADD CONSTANTS POSITION TALK TO KARL ABOUT GETTING POS VALUES
-
-                            if(timer.seconds() > 0.9) {
-                                armMotor.setPower((0));
-                                stop();
-                                timer.reset();
-                                currentState = States.CLAWOPEN;
-                            }
+                    if (armLimit.getValue() == 1) {
+                        armMotor.setTargetPosition(MaxPos);
+                        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        armMotor.setPower(-0.5);
+                    }else {
+                        armMotor.setTargetPosition(limitedPos);
+                        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        armMotor.setPower(0.5);
+                    }
+                    currentState = States.WRISTADJUSTFRONT;
+                    sleep(delay);
+                    timer.reset();
                     break;
-                case CLAWOPEN :
-                    clawServo.setPower(0.6);
-                    if(timer.seconds() > 0.2) {
-                        clawServo.setPower(0);
+                case WRISTADJUSTFRONT:
+                    wristServo.setPower(-0.6);
+                    if(timer.seconds() > 2) {
+                        wristServo.setPower(0);
                         stop();
+                        sleep(delay);
                         timer.reset();
                         currentState = States.CLAWOPEN;
                     }
+                    break;
+                case CLAWOPEN :
+                    wristServo.setPower(0.6);
+                    sleep(300);
+                    clawServo.setPower(-0.6);
+                    if(timer.seconds() > 0.5) {
+                        clawServo.setPower(0);
+                        stop();
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.WRISTADJUSTBACK2;
+                    }
+                    break;
+                case WRISTADJUSTBACK2 :
+                    wristServo.setPower(0.6);
+                    if(timer.seconds() > 2) {
+                        wristServo.setPower(0);
+                        stop();
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.ARMEXTENDDOWN;
+                    }
+                    break;
+                case ARMEXTENDDOWN :
+                    armMotor.setTargetPosition(limitedPos);
+                    armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armMotor.setPower(0.5);
+                    currentState = States.MOVEBACK;
+                    sleep(delay);
+                    timer.reset();
+                    break;
+                case MOVEBACK :
+                    frontLeftMotor.setPower(0.6);
+                    frontRightMotor.setPower(-0.6);
+                    backLeftMotor.setPower(0.6);
+                    backRightMotor.setPower(-0.6);
 
+                    if(timer.seconds()>0.5) {
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        stop();
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.ARMDOWN;
+                    }
+                    break;
+                case ARMDOWN :
+                    udarmMotor.setTargetPosition(0);
+                    udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    udarmMotor.setPower(0.5);
+                    armUpStablize = false;
 
+                    currentState = States.END;
+                    sleep(delay);
+                    timer.reset();
+                    break;
                 case END:
             }
-
+            telemetry.addData("current State", currentState);
+            telemetry.addData("Viper Slide Postion", armMotor.getCurrentPosition());
+            telemetry.addData("udarmMotorPOS", udarmMotor.getCurrentPosition());
+            telemetry.update();
         }
 
     }

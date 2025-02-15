@@ -23,6 +23,7 @@ public class TestOpClass extends LinearOpMode {
 
         CRServo clawServo = hardwareMap.crservo.get("clawServo");
         CRServo wristServo = hardwareMap.crservo.get("wristServo");
+        CRServo wristSpinServo = hardwareMap.crservo.get("wristSpinServo");
         TouchSensor armLimit = hardwareMap.touchSensor.get("armLimit");
 
         ElapsedTime timer = new ElapsedTime();
@@ -35,6 +36,7 @@ public class TestOpClass extends LinearOpMode {
 
         //This statement is to initialize the position counter at zero.  Don't use with current code but this may be handy later. -Coach Matt
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         int udarmPos = udarmMotor.getCurrentPosition();
         int viperslidepos = armMotor.getCurrentPosition();
@@ -169,6 +171,15 @@ public class TestOpClass extends LinearOpMode {
             }
             clawServo.setPower(clawSpeed);
 
+            double wristSpinSpeed=0;
+            if (gamepad2.a) {
+                wristSpinSpeed = 0.5;
+            }
+            if (gamepad2.b) {
+                wristSpinSpeed = -0.5;
+            }
+            wristSpinServo.setPower(wristSpinSpeed);
+
             double wristSpeed=0;
             if (gamepad2.left_trigger >= 0.2) {
                 wristSpeed = -0.3;
@@ -203,6 +214,7 @@ public class TestOpClass extends LinearOpMode {
             telemetry.addData("limitedPos", limitedPos);
             telemetry.addData("MaxPos", MaxPos);
             telemetry.addData("setViperPOS", setViperPOS);
+            telemetry.addData("udarmMotorPOS", udarmMotor.getCurrentPosition());
             telemetry.update();
 
         }
