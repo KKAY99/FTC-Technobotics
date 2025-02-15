@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Atonmous extends LinearOpMode {
     enum States{
         MOVEFORWARD,ARMEXTEND,ARMUP,WRISTADJUSTBACK,
-        WRISTADJUSTFRONT,ARMEXTENDDOWN,ARMDOWN,MOVEBACK,WRISTADJUSTBACK2,CLAWOPEN,END
+        WRISTADJUSTFRONT,ARMEXTENDDOWN,ARMDOWN,MOVEBACK,WRISTADJUSTBACK2,ROBOTADJUST,CLAWOPEN,END
     }
 //2667 is the scoring point
 
@@ -36,7 +36,7 @@ public class Atonmous extends LinearOpMode {
 
 
         waitForStart();
-        ElapsedTime timer=new ElapsedTime();
+        ElapsedTime timer = new ElapsedTime();
         timer.reset();
         boolean stop = true;
         boolean armUpStablize = false;
@@ -45,7 +45,7 @@ public class Atonmous extends LinearOpMode {
         double rx=0;
         int udarmMaxPos = 2667;
         double maxPower = Constants.MotorConstants.driveSpeed;
-        int delay = 5000;
+        int delay = 2000;
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -85,8 +85,29 @@ public class Atonmous extends LinearOpMode {
                     backLeftMotor.setPower(-0.6);
                     backRightMotor.setPower(0.6);
 
-                    if(timer.seconds()>0.9) {
+                    if(timer.seconds() > 0.8) {
                         stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
+                        sleep(delay);
+                        timer.reset();
+                        currentState = States.ROBOTADJUST;
+                    }
+                    break;
+                case ROBOTADJUST :
+                    frontLeftMotor.setPower(0.6);
+                    frontRightMotor.setPower(0.6);
+                    backLeftMotor.setPower(0.6);
+                    backRightMotor.setPower(0.6);
+
+                    if(timer.seconds() > 0.2) {
+                        stop();
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
                         sleep(delay);
                         timer.reset();
                         currentState = States.ARMUP;
@@ -100,10 +121,11 @@ public class Atonmous extends LinearOpMode {
 
                     currentState = States.WRISTADJUSTBACK;
                     sleep(delay);
+                    timer.reset();
                     break;
                 case WRISTADJUSTBACK:
                     wristServo.setPower(0.6);
-                    if(timer.seconds() > 0.9) {
+                    if(timer.seconds() > 2) {
                         wristServo.setPower(0);
                         stop();
                         sleep(delay);
@@ -126,10 +148,11 @@ public class Atonmous extends LinearOpMode {
                     }
                     currentState = States.WRISTADJUSTFRONT;
                     sleep(delay);
+                    timer.reset();
                     break;
                 case WRISTADJUSTFRONT:
-                    wristServo.setPower(-0.5);
-                    if(timer.seconds() > 0.5) {
+                    wristServo.setPower(-0.6);
+                    if(timer.seconds() > 2) {
                         wristServo.setPower(0);
                         stop();
                         sleep(delay);
@@ -138,7 +161,9 @@ public class Atonmous extends LinearOpMode {
                     }
                     break;
                 case CLAWOPEN :
-                    clawServo.setPower(0.6);
+                    wristServo.setPower(0.6);
+                    sleep(300);
+                    clawServo.setPower(-0.6);
                     if(timer.seconds() > 0.5) {
                         clawServo.setPower(0);
                         stop();
@@ -149,7 +174,7 @@ public class Atonmous extends LinearOpMode {
                     break;
                 case WRISTADJUSTBACK2 :
                     wristServo.setPower(0.6);
-                    if(timer.seconds() > 0.9) {
+                    if(timer.seconds() > 2) {
                         wristServo.setPower(0);
                         stop();
                         sleep(delay);
@@ -163,6 +188,7 @@ public class Atonmous extends LinearOpMode {
                     armMotor.setPower(0.5);
                     currentState = States.MOVEBACK;
                     sleep(delay);
+                    timer.reset();
                     break;
                 case MOVEBACK :
                     frontLeftMotor.setPower(0.6);
@@ -170,7 +196,11 @@ public class Atonmous extends LinearOpMode {
                     backLeftMotor.setPower(0.6);
                     backRightMotor.setPower(-0.6);
 
-                    if(timer.seconds()>0.9) {
+                    if(timer.seconds()>0.5) {
+                        frontLeftMotor.setPower(0);
+                        frontRightMotor.setPower(0);
+                        backLeftMotor.setPower(0);
+                        backRightMotor.setPower(0);
                         stop();
                         sleep(delay);
                         timer.reset();
@@ -185,6 +215,7 @@ public class Atonmous extends LinearOpMode {
 
                     currentState = States.END;
                     sleep(delay);
+                    timer.reset();
                     break;
                 case END:
             }
