@@ -1,19 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.google.blocks.ftcrobotcontroller.hardware.HardwareItemMap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 @TeleOp
-public class TestOpClass extends LinearOpMode {
+public class RedOpClass extends LinearOpMode {
 
     private void homeArm(DcMotor armMotor,TouchSensor armSensor){
         int startArmPos= armMotor.getCurrentPosition(); // get current position
@@ -36,6 +32,10 @@ public class TestOpClass extends LinearOpMode {
     }
     @Override
     public void runOpMode() throws InterruptedException {
+        RevBlinkinLedDriver blinkinLedDriver;
+        RevBlinkinLedDriver.BlinkinPattern pattern;
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
         // Declare our motors
         // Make sure your ID's match your configuration
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
@@ -123,6 +123,7 @@ public class TestOpClass extends LinearOpMode {
             }
 
             if(gamepad1.left_bumper){
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 telemetry.addData("Turn Motor Off","false");
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                viperMotorSpeed=Constants.MotorConstants.viperMoveDownSpeed;
@@ -132,6 +133,7 @@ public class TestOpClass extends LinearOpMode {
             }
 
             if(gamepad1.right_bumper){
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP2_LARSON_SCANNER);
                 telemetry.addData("Turn Motor Off","false");
                 viperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 viperMotorSpeed=-Constants.MotorConstants.viperMoveUpSpeed;
@@ -149,6 +151,7 @@ public class TestOpClass extends LinearOpMode {
 
             if(gamepad1.a){
                 bucketServo.setPosition(Constants.MotorConstants.bucketDumpPosition);
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.CONFETTI);
             }
             if(gamepad1.b){
                 bucketServo.setPosition(Constants.MotorConstants.bucketFlatPosition);
