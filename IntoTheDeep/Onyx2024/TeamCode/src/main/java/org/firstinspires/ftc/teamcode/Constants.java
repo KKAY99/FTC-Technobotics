@@ -4,7 +4,7 @@ public final class Constants {
     public static final int homeLimitTicks=330;
     public final static class MotorConstants {
         public static final double driveSpeed = 0.6;
-        public static final double viperMoveDownSpeed=0.5;
+        public static final double viperMoveDownSpeed=0.8;
         public static final double viperMoveUpSpeed=1;
         public static final double armMoveUpSpeed=-0.1;
         public static final double armMoveDownSpeed=0.8;

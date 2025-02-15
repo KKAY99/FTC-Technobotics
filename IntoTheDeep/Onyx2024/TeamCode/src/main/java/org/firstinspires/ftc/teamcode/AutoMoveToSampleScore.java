@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -153,6 +154,10 @@ public class AutoMoveToSampleScore extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        RevBlinkinLedDriver blinkinLedDriver;
+        RevBlinkinLedDriver.BlinkinPattern pattern;
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP2_SHOT);
         CRServo intakeServo= hardwareMap.crservo.get("intakeServo");
         Servo bucketServo= hardwareMap.servo.get("bucketServo");
         DcMotor armMotor=hardwareMap.dcMotor.get("armMotor");
@@ -170,12 +175,11 @@ public class AutoMoveToSampleScore extends LinearOpMode {
             if (autohasrun==false) {
                 //liftarm(1000);
                 autoStep(0,armMotor,intakeServo,bucketServo);
-                autoDrive(0.6, 0, 0, 75);
+                autoDrive(-0.6, 0, 0, 450);
                 autoStep(50,armMotor,intakeServo,bucketServo);
-                autoDrive(0, 0.6, 0,2000 );
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-
-                autoDrive(0, 0, 1, 250);
+                autoDrive(0, -0.6, 0, 100);
+                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoDrive(0, 0, -1, 125);
                 autoStep(50,armMotor,intakeServo,bucketServo);
 
                 liftViperSlide(viperMotor);
