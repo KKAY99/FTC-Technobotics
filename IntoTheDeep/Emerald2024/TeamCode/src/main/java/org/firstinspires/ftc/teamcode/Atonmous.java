@@ -48,7 +48,7 @@ public class Atonmous extends LinearOpMode {
         double rx=0;
         int udarmMaxPos = 2667;
         double maxPower = Constants.MotorConstants.driveSpeed;
-        int delay = 1000;
+        int delay = 500;
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         udarmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -119,7 +119,7 @@ public class Atonmous extends LinearOpMode {
                 case ARMUP:
                     udarmMotor.setTargetPosition(udarmMaxPos);
                     udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    udarmMotor.setPower(-0.5);
+                    udarmMotor.setPower(-1);
                     armUpStablize = true;
 
                     currentState = States.WRISTADJUSTBACK;
@@ -127,7 +127,7 @@ public class Atonmous extends LinearOpMode {
                     timer.reset();
                     break;
                 case WRISTADJUSTBACK:
-                    wristServo.setPower(0.6);
+                    wristServo.setPower(1);
                     if(timer.seconds() > 2) {
                         wristServo.setPower(0);
                         stop();
@@ -143,14 +143,14 @@ public class Atonmous extends LinearOpMode {
                     if (armLimit.getValue() == 1) {
                         armMotor.setTargetPosition(MaxPos);
                         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armMotor.setPower(-0.8);
+                        armMotor.setPower(-1);
                     }else {
                         armMotor.setTargetPosition(limitedPos);
                         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        armMotor.setPower(0.8);
+                        armMotor.setPower(1);
                     }
                     currentState = States.WRISTADJUSTFRONT;
-                    sleep(2000);
+                    sleep(1000);
                     timer.reset();
                     break;
                 case WRISTADJUSTFRONT:
@@ -165,7 +165,7 @@ public class Atonmous extends LinearOpMode {
                     break;
                 case CLAWOPEN :
                     wristServo.setPower(0.6);
-                    sleep(300);
+                    sleep(60);
                     clawServo.setPower(-0.6);
                     if(timer.seconds() > 0.5) {
                         clawServo.setPower(0);
@@ -176,8 +176,8 @@ public class Atonmous extends LinearOpMode {
                     }
                     break;
                 case WRISTADJUSTBACK2 :
-                    wristServo.setPower(0.6);
-                    if(timer.seconds() > 2) {
+                    wristServo.setPower(1);
+                    if(timer.seconds() > 1.5) {
                         wristServo.setPower(0);
                         stop();
                         sleep(delay);
@@ -213,7 +213,7 @@ public class Atonmous extends LinearOpMode {
                 case ARMDOWN :
                     udarmMotor.setTargetPosition(0);
                     udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    udarmMotor.setPower(0.5);
+                    udarmMotor.setPower(1);
                     armUpStablize = false;
 
                     currentState = States.ROBOTADJUST2;
@@ -306,9 +306,9 @@ public class Atonmous extends LinearOpMode {
                     }
                     break;
                 case ARMUP2 :
-                    udarmMotor.setTargetPosition(udarmMaxPos);
+                    udarmMotor.setTargetPosition(1000);
                     udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    udarmMotor.setPower(-0.8);
+                    udarmMotor.setPower(-1);
                     armUpStablize = false;
 
                     currentState = States.MOVETOSUB;
@@ -329,15 +329,15 @@ public class Atonmous extends LinearOpMode {
                         backRightMotor.setPower(0);
                         sleep(delay);
                         timer.reset();
-                        currentState = States.END;
+                        currentState = States.ARMDOWN2;
                     }
                 case ARMDOWN2 :
-                    udarmMotor.setTargetPosition(0);
+                    udarmMotor.setTargetPosition(920);
                     udarmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    udarmMotor.setPower(0.5);
+                    udarmMotor.setPower(1);
                     armUpStablize = false;
 
-                    currentState = States.ROBOTADJUST2;
+                    currentState = States.END;
                     sleep(delay);
                     timer.reset();
                     break;
