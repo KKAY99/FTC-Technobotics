@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
-public class AutoMoveToSampleScore extends LinearOpMode {
+public class AutoMoveToSampleStop extends LinearOpMode {
     private void autoDrive(double xSpeed,double ySpeed,double rotation,int ticksToTravel) {
       // pass in distance in ticks
 
@@ -193,17 +193,7 @@ public class AutoMoveToSampleScore extends LinearOpMode {
                 autoStep(100,armMotor,intakeServo,bucketServo);
                 downViperSlide(viperMotor);
                 autoStep(50,armMotor,intakeServo,bucketServo);
-                autoDrive(0 ,0, -0.5, 1200);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                autoDrive(-1, 0, 0, 300);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
-                autoDrive(0, 1, 0, 900);
-                autoStep(50,armMotor,intakeServo,bucketServo);
-                autoDrive(0, 0, -0.5, 700);
-                autoStep(50,armMotor,intakeServo,bucketServo);
-                autoDrive(1, 0, 0, 1000);
-                autoStep(50,armMotor,intakeServo,bucketServo);
-
+                ;
                 autohasrun=true;
             }
         }
