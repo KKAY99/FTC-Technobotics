@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class AutoMovetoObservationZone extends LinearOpMode {
     private void autoDrive(double xSpeed,double ySpeed,int rotation,double distanceIn) {
         int kticksPerIn=26;
-
+        int ticksToTravel= (int) distanceIn/kticksPerIn;
 
         // Declare our motors
         // Make sure your ID's match your configuration

@@ -11,6 +11,7 @@ public final class Constants {
         public static final int viperBottomPosition=0;
         public static final int viperBottomStopMotor=-40;
         public static final int viperTopPosition=-5600;
+        public static final int viperAutoTopPosition=-5454;
         public static final double bucketFlatPosition=0.1;
         public static final double bucketDumpPosition=0.25;
         public static final double bucketLoadPosition=-0.1;
