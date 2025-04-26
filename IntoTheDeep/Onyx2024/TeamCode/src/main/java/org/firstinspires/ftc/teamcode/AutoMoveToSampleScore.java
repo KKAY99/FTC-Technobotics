@@ -8,6 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
+import java.util.Locale;
+
 @Autonomous
 public class AutoMoveToSampleScore extends LinearOpMode {
     private void autoDrive(double xSpeed,double ySpeed,double rotation,int ticksToTravel) {
@@ -126,13 +132,24 @@ public class AutoMoveToSampleScore extends LinearOpMode {
         sleep(500);
         wristServo.setPower(0);
     }
-    private void autoStep(int delay,DcMotor armMotor,CRServo intakeServo, Servo bucketServo){
+    private void autoStep(int delay,DcMotor armMotor,CRServo intakeServo, Servo bucketServo,GoBildaPinpointDriver odo){
         double bucketPos=bucketServo.getPosition();
         String bucketPosition=String.format("%.2f",bucketPos);
         telemetry.addData("Bucket Position",bucketPosition);
       //  telemetry.addData("Intake Position",intakeServo.getP);
         telemetry.addData("Arm Position",armMotor.getCurrentPosition());
         //telemetry.addData("Elbow Position",wristServo.)
+        Pose2D pos = odo.getPosition();
+        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Position", data);
+        Pose2D vel = odo.getVelocity();
+        String velocity = String.format(Locale.US,"{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.MM), vel.getY(DistanceUnit.MM), vel.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Velocity", velocity);
+
+        telemetry.addData("Status", odo.getDeviceStatus());
+        telemetry.addData("Pinpoint Frequency", odo.getFrequency());
+        //telemetry.addData("REV Hub Frequency: ", frequency);
+
         telemetry.update();
         if(delay>0) {
             sleep(delay);
@@ -154,6 +171,26 @@ public class AutoMoveToSampleScore extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
+
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+
+
+        odo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
+
+
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+
+        //odo.recalibrateIMU();
+        odo.resetPosAndIMU();
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("X offset", odo.getXOffset());
+        telemetry.addData("Y offset", odo.getYOffset());
+        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+        telemetry.addData("Device Scalar", odo.getYawScalar());
         RevBlinkinLedDriver blinkinLedDriver;
         RevBlinkinLedDriver.BlinkinPattern pattern;
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
@@ -171,38 +208,51 @@ public class AutoMoveToSampleScore extends LinearOpMode {
 
         if (isStopRequested()) return;
         boolean autohasrun=false;
+        double oldTime=getRuntime();
+
         while (opModeIsActive()) {
+            odo.update();
+            double newTime = getRuntime();
+            double loopTime = newTime-oldTime;
+            double frequency = 1/loopTime;
+            oldTime = newTime;
+            Pose2D pos = odo.getPosition();
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("Position", data);
+            Pose2D vel = odo.getVelocity();
+            String velocity = String.format(Locale.US,"{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.MM), vel.getY(DistanceUnit.MM), vel.getHeading(AngleUnit.DEGREES));
+
             if (autohasrun==false) {
                 //liftarm(1000);
-                autoStep(0,armMotor,intakeServo,bucketServo);
+                autoStep(0,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(-0.6, 0, 0, 450);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(0, -0.6, 0, 200);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(0, 0, -0.6, 300);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 liftViperSlide(viperMotor);
-                autoStep(100,armMotor,intakeServo,bucketServo);
+                autoStep(100,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(-0.3, 0, 0, 200);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 tiltBasketFoward();
-                autoStep(100,armMotor,intakeServo,bucketServo);
+                autoStep(100,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(0.6, 0, 0, 100);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 flatBasket();
-                autoStep(100,armMotor,intakeServo,bucketServo);
+                autoStep(100,armMotor,intakeServo,bucketServo,odo);
                 downViperSlide(viperMotor);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(0 ,0, -0.5, 1200);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
+                autoStep(2000,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(-1, 0, 0, 300);
-                autoStep(2000,armMotor,intakeServo,bucketServo);
+                autoStep(2000,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(0, 1, 0, 900);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(0, 0, -0.5, 700);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
                 autoDrive(1, 0, 0, 1000);
-                autoStep(50,armMotor,intakeServo,bucketServo);
+                autoStep(50,armMotor,intakeServo,bucketServo,odo);
 
                 autohasrun=true;
             }
