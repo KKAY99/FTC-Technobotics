@@ -220,6 +220,7 @@ public class RedOpClass extends LinearOpMode {
             telemetry.addData("Viper Position",viperMotor.getCurrentPosition());
             double bucketPos=bucketServo.getPosition();
             String bucketPosition=String.format("%.2f",bucketPos);
+            telemetry.addData("Wrist Speed",wristMotorSpeed);
             telemetry.addData("Bucket Position",bucketPos);
             telemetry.addData("Arm Position",armMotor.getCurrentPosition());
             telemetry.addData("Arm Target",armMotorPosition);
