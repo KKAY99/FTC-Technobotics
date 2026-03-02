@@ -110,7 +110,6 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
      */
     @Override
     public void runOpMode() {
-        boolean intakeOn=false;
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here must correspond
@@ -138,16 +137,7 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-
-        //TOPAZ MOTORS
-        // set direction of wheel motors
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        //RUBY MOTORS
+//RUBY MOTORS
         // set direction of wheel motors
         //leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         //rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -155,6 +145,13 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
         //leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         //rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         //
+        // set direction of wheel motors
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
         // set direction of subsystem motors
         intake.setDirection(DcMotor.Direction.FORWARD); // Forward should INTAKE.
         catapult1.setDirection(DcMotor.Direction.REVERSE); // Backwards should pivot DOWN, or in the stowed position.
@@ -187,10 +184,8 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
             //axial = speed, lateral = turn, yaw = strafe
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral = -gamepad1.right_stick_x;
-            double yaw = gamepad1.left_stick_x;
-            if((yaw>-0.6) &&(yaw<0.6)){
-                yaw=0;
-            }
+            double yaw = -gamepad1.left_stick_x;
+
             boolean intakeInButton = gamepad1.left_trigger > 0.2;
             boolean intakeOutButton = gamepad1.left_bumper;
 
@@ -247,23 +242,12 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
             rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad */
 
             // INTAKE CODE
-            if(intakeOn==false) {
-                if (intakeInButton) {
-                    intakePower = INTAKE_IN_POWER;
-                    intakeOn = true;
-                } else if (intakeOutButton) {
-                    intakePower = INTAKE_OUT_POWER;
-                } else {
-                    intakePower = INTAKE_OFF_POWER;
-                }
-            }else if(intakeOn==true){
-                if (intakeInButton) {
-                    intakePower = INTAKE_OFF_POWER;
-                    intakeOn = false;
-                } else if (intakeOutButton) {
-                    intakePower = INTAKE_OUT_POWER;
-                    intakeOn = false;
-                }
+            if (intakeInButton) {
+                intakePower = INTAKE_IN_POWER;
+            } else if (intakeOutButton) {
+                intakePower = INTAKE_OUT_POWER;
+            } else {
+                intakePower = INTAKE_OFF_POWER;
             }
 
             // FOOT CODE

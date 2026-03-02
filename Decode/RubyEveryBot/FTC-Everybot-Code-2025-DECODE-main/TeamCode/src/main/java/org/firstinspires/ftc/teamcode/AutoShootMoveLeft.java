@@ -29,8 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -63,9 +63,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 // Based on the sample: Basic: Omni Linear OpMode
-@TeleOp(name = "TeleOp Control", group = "Teleop")
+@Autonomous(name = "AutoShootMoveLeft", group = "Autonomous")
 
-public class TeleOpControlLinearOpMode extends LinearOpMode {
+public class AutoShootMoveLeft extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -104,13 +104,11 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
 
     private enum FootMode {UP, DOWN, BRAKE}
     private FootMode footmode;
-
     /*
      * Code to run ONCE when the driver hits INIT (same as previous year's init())
      */
     @Override
     public void runOpMode() {
-        boolean intakeOn=false;
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here must correspond
@@ -139,22 +137,13 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
 
-        //TOPAZ MOTORS
         // set direction of wheel motors
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
 
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        //RUBY MOTORS
-        // set direction of wheel motors
-        //leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        //rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        //leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        //rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        //
         // set direction of subsystem motors
         intake.setDirection(DcMotor.Direction.FORWARD); // Forward should INTAKE.
         catapult1.setDirection(DcMotor.Direction.REVERSE); // Backwards should pivot DOWN, or in the stowed position.
@@ -180,17 +169,34 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
         double rightFrontPower = 0;
         double leftBackPower = 0;
         double rightBackPower = 0;
+        double axial=0;
+        double lateral=0;
+        double yaw=0;
+        boolean catapultDownButton=false;
+        boolean catapultUpButton=false;
+
         while (opModeIsActive()) {
             double max;
+            if(runtime.seconds()<1){
+                catapultDownButton=true;
+            }else if(runtime.seconds()<2){
+                catapultDownButton=false;
+                catapultUpButton=true;
+            } else if (runtime.seconds()<3){
+                catapultUpButton=false;
+            }
+            else if(runtime.seconds()<5) {
+                yaw=0.25;
+            } else {
+                yaw=0;
+            }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             //axial = speed, lateral = turn, yaw = strafe
-            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral = -gamepad1.right_stick_x;
-            double yaw = gamepad1.left_stick_x;
-            if((yaw>-0.6) &&(yaw<0.6)){
-                yaw=0;
-            }
+            //double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            //double lateral = -gamepad1.right_stick_x;
+            //double yaw = -gamepad1.left_stick_x;
+
             boolean intakeInButton = gamepad1.left_trigger > 0.2;
             boolean intakeOutButton = gamepad1.left_bumper;
 
@@ -205,11 +211,11 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
                 footOutButton = false;
             }
 
-            boolean catapultUpButton = gamepad1.right_bumper;
-            boolean catapultDownButton = gamepad1.right_trigger > 0.2;
-            if (catapultUpButton && catapultDownButton) {
-                catapultUpButton = false;
-            }
+            //boolean catapultUpButton = gamepad1.right_bumper;
+            //boolean catapultDownButton = gamepad1.right_trigger > 0.2;
+            //if (catapultUpButton && catapultDownButton) {
+            //    catapultUpButton = false;
+            //}
 
             // DRIVE CODE
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
@@ -247,23 +253,12 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
             rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad */
 
             // INTAKE CODE
-            if(intakeOn==false) {
-                if (intakeInButton) {
-                    intakePower = INTAKE_IN_POWER;
-                    intakeOn = true;
-                } else if (intakeOutButton) {
-                    intakePower = INTAKE_OUT_POWER;
-                } else {
-                    intakePower = INTAKE_OFF_POWER;
-                }
-            }else if(intakeOn==true){
-                if (intakeInButton) {
-                    intakePower = INTAKE_OFF_POWER;
-                    intakeOn = false;
-                } else if (intakeOutButton) {
-                    intakePower = INTAKE_OUT_POWER;
-                    intakeOn = false;
-                }
+            if (intakeInButton) {
+                intakePower = INTAKE_IN_POWER;
+            } else if (intakeOutButton) {
+                intakePower = INTAKE_OUT_POWER;
+            } else {
+                intakePower = INTAKE_OFF_POWER;
             }
 
             // FOOT CODE
