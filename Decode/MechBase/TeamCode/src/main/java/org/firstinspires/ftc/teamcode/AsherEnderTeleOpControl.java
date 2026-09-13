@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -66,7 +65,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // Based on the sample: Basic: Omni Linear OpMode
 @TeleOp(name = "TeleOp Control", group = "Teleop")
 
-public class TeleOpControlLinearOpMode extends LinearOpMode {
+public class AsherEnderTeleOpControl extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();

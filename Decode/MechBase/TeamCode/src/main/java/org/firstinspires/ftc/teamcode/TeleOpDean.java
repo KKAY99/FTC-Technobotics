@@ -31,8 +31,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -66,7 +66,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // Based on the sample: Basic: Omni Linear OpMode
 @TeleOp(name = "TeleOp Control", group = "Teleop")
 
-public class TeleOpControlLinearOpMode extends LinearOpMode {
+public class TeleOpDean extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -77,7 +77,7 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-
+    private CRServo intakeServo = null;
 
     // motor power 1 = 100% and 0.5 = 50%
     // negative values = reverse ex: -0.5 = reverse 50%
@@ -110,7 +110,7 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-
+        intakeServo = hardwareMap.get(CRServo.class,"intake");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -132,11 +132,11 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
         //rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         //
         // set direction of wheel motors
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
 
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
 
         // Wait for the game to start (driver presses START)
@@ -191,18 +191,23 @@ public class TeleOpControlLinearOpMode extends LinearOpMode {
             //      the setDirection() calls above.
             // Once the correct motors move in the correct direction re-comment this code.
 
-/*            leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
+/*         leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
             leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
             rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
             rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
 */
 
-            // WRITE EFFECTORS - Send calculated power to wheels
+            // WRITE EFFECTORS - Send calculated power to wheels{
             leftFrontDrive.setPower(leftFrontPower);
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
+            if (gamepad1.right_bumper) {
 
+                intakeServo.setPower(1);
+            }else {
+                intakeServo.setPower(0);
+            }
 
             // UPDATE TELEMETRY
             // Show the elapsed game time, wheel power, and other systems power
