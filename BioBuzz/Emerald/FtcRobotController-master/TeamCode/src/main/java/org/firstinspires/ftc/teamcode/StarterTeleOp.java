@@ -43,10 +43,10 @@ public class StarterTeleOp extends OpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
     private DcMotor intake = null;
-    private DcMotor nectarshooterMotor = null;
+   // private DcMotor nectarshooterMotor = null;
     private DcMotor pollenshooterMotor = null;
-    private CRServo leftIntakeServo = null;
-    private CRServo rightIntakeServo = null;
+    //private CRServo leftIntakeServo = null;
+    //private CRServo rightIntakeServo = null;
 
     // Set up a variable for each drive wheel to save power level for telemetry.
     double leftFrontPower;
@@ -75,10 +75,10 @@ public class StarterTeleOp extends OpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "backleftMotor");
         rightBackDrive = hardwareMap.get(DcMotor.class, "backrightMotor");
         intake = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-        nectarshooterMotor = hardwareMap.get(DcMotorEx.class, "nectarshooterMotor");
+      //  nectarshooterMotor = hardwareMap.get(DcMotorEx.class, "nectarshooterMotor");
         pollenshooterMotor = hardwareMap.get(DcMotorEx.class, "pollenshooterMotor");
-        leftIntakeServo = hardwareMap.get(CRServo.class, "left_intake_servo");
-        rightIntakeServo = hardwareMap.get(CRServo.class, "right_intake_servo");
+       // leftIntakeServo = hardwareMap.get(CRServo.class, "left_intake_servo");
+       // rightIntakeServo = hardwareMap.get(CRServo.class, "right_intake_servo");
 
         /*
          * To drive forward, most robots need the motor on one side to be reversed,
@@ -107,14 +107,14 @@ public class StarterTeleOp extends OpMode {
         /*
          * set Feeders to an initial value to initialize the servo controller
          */
-        leftIntakeServo.setPower(0);
-        rightIntakeServo.setPower(0);
+      //  leftIntakeServo.setPower(0);
+      //  rightIntakeServo.setPower(0);
 
         /*
          * Much like our drivetrain motors, we set the right intake servo to reverse so that both
          * servos work to pull elements into the intake.
          */
-        rightIntakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        //rightIntakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         /*
          * Tell the driver that initialization is complete.
@@ -165,11 +165,12 @@ public class StarterTeleOp extends OpMode {
          * allow us to avoid setting the same motors/servos power more than once per loop. That can
          * create erratic behavior.
          */
-        intakePower = gamepad1.right_trigger - gamepad1.left_trigger;
-
+        intakePower = gamepad1.right_trigger;
+        nectarPower = gamepad1.left_trigger;
+        nectarshooterMotor.setPower(nectarPower);
         intake.setPower(intakePower);
-        leftIntakeServo.setPower(intakePower);
-        rightIntakeServo.setPower(intakePower);
+       // leftIntakeServo.setPower(intakePower);
+       // rightIntakeServo.setPower(intakePower);
 
         /*
          * Show motor powers on the Driver Station via telemetry.
